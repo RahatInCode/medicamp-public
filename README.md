@@ -1,12 +1,81 @@
-# React + Vite
+# 🏥 MediCamp - Medical Camp Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**MediCamp** is a full-stack Medical Camp Management System built with the **MERN stack (MongoDB, Express, React, Node.js)**. It simplifies the process of organizing, managing, and participating in medical camps through a role-based dashboard, secure authentication, and a clean responsive UI.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Live Demo
 
-## Expanding the ESLint configuration
+🌐 [Live Site Link](https://your-live-site-url.com)  
+🔐 Organizer Login:  
+- **Username**: organizer@medicamp.com  
+- **Password**: organizer123
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 📸 Preview
+
+![MediCamp Homepage Screenshot](./public/preview-home.png)
+
+---
+
+## 📦 Tech Stack
+
+- **Frontend:** React, React Router DOM, Tailwind CSS, TanStack Query, Shadcn/UI, Framer Motion, Stripe, Firebase Auth
+- **Backend:** Node.js, Express, MongoDB, JWT
+- **Tools & Libraries:** Axios, React Hook Form, Recharts, SweetAlert2, React Toastify
+
+---
+
+## ✅ Features
+
+- 🔐 Role-based authentication (Organizer / Participant)
+- 🧠 Organizer Dashboard: Add, Manage Camps, View Registrations
+- 🙋 Participant Dashboard: Join Camps, Payments, Feedback, Analytics
+- 💳 Stripe integration for secure payments
+- 📊 Real-time charts showing user analytics (Recharts)
+- 🔍 Search, sort, and pagination in all tables
+- 📱 Fully responsive on desktop, tablet, and mobile
+- 🧾 JWT secured private routes (persistent login)
+- 🧼 Sweet Alerts + Toasts for all interactions (no default browser alerts)
+- 🎭 404 Page + animation using Framer Motion / AOS
+- 📬 Feedback & Ratings system from participants
+- 🧪 TanStack Query for all `GET` API calls
+- ✨ Extra Feature: Volunteer Management (Organizer-side)
+
+---
+
+
+---
+
+## 🧪 Test Accounts
+
+### ✅ Organizer
+- Email: organizer@medicamp.com
+- Password: organizer123
+
+### ✅ Participant
+- Email: user@medicamp.com
+- Password: user123
+
+---
+
+## ⚙️ Local Setup
+
+```bash
+# Clone the repo
+git clone https://github.com/yourusername/medicamp.git
+cd medicamp
+
+# Install server
+cd server
+npm install
+npm run dev
+
+# Install client
+cd ../client
+npm install
+npm run dev
+
+
+
