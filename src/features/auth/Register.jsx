@@ -1,57 +1,75 @@
-// File: /pages/Register.jsx
-import { useState } from 'react'
-import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
-import { auth } from '../../firebase/firebase.config'
-import { useNavigate } from 'react-router'
+import { useForm } from "react-hook-form";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  GoogleAuthProvider,
+  signInWithPopup
+} from "firebase/auth";
+import { auth } from '../../firebase/firebase.config';
+import { useNavigate, Link } from "react-router";
+import { toast } from "react-hot-toast"; // ✅ using working toast
 
-export default function Register() {
-  const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
-  const navigate = useNavigate()
+const Register = () => {
+  const { register, handleSubmit } = useForm();
+  const navigate = useNavigate();
+  const googleProvider = new GoogleAuthProvider();
 
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value })
-  }
-
-  const handleRegister = async (e) => {
-    e.preventDefault()
-    if (form.password !== form.confirm) return alert('Passwords do not match')
-    try {
-      const userCredential = await createUserWithEmailAndPassword(auth, form.email, form.password)
-      await updateProfile(userCredential.user, { displayName: form.name })
-      navigate('/')
-    } catch (err) {
-      alert(err.message)
+  const onSubmit = ({ name, email, password }) => {
+    if (password.length < 6) {
+      toast.error("🚫 Password must be at least 6 characters!");
+      return;
     }
-  }
 
-  const handleGoogle = async () => {
-    try {
-      const provider = new GoogleAuthProvider()
-      await signInWithPopup(auth, provider)
-      navigate('/')
-    } catch (err) {
-      alert(err.message)
-    }
-  }
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        console.log("✅ User registered:", userCredential.user);
+        return updateProfile(userCredential.user, { displayName: name });
+      })
+      .then(() => {
+        toast.success("🎉 Registration successful!");
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error("❌ Register error:", err.code);
+        if (err.code.includes("weak-password")) {
+          toast.error("🛡️ Password is too weak!");
+        } else if (err.code.includes("email-already-in-use")) {
+          toast.error("📧 Email already in use. Try logging in.");
+        } else {
+          toast.error("⚠️ Registration failed. Try again.");
+        }
+      });
+  };
+
+  const handleGoogleRegister = () => {
+    signInWithPopup(auth, googleProvider)
+      .then((res) => {
+        console.log("✅ Google register:", res.user);
+        toast.success("🎯 Google registration successful!");
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error("❌ Google register error:", err.message);
+        toast.error("⚠️ Google registration failed");
+      });
+  };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-blue-50">
-      <div className="bg-white p-8 rounded-lg w-full max-w-md shadow">
-        <h2 className="text-2xl font-bold mb-2 text-center">Create Account</h2>
-        <p className="text-center text-gray-500 mb-4">Join our community and access quality healthcare</p>
-        <form onSubmit={handleRegister} className="space-y-4">
-          <input name="name" value={form.name} onChange={handleChange} className="w-full p-2 border rounded" placeholder="Enter your full name" required />
-          <input name="email" value={form.email} onChange={handleChange} className="w-full p-2 border rounded" type="email" placeholder="Enter your email" required />
-          <input name="password" value={form.password} onChange={handleChange} className="w-full p-2 border rounded" type="password" placeholder="Create a password" required />
-          <input name="confirm" value={form.confirm} onChange={handleChange} className="w-full p-2 border rounded" type="password" placeholder="Confirm your password" required />
-          <button type="submit" className="bg-black text-white w-full py-2 rounded">Create Account</button>
-        </form>
-        <div className="text-center my-4 text-gray-400">OR CONTINUE WITH</div>
-        <button onClick={handleGoogle} className="w-full py-2 border rounded flex justify-center items-center gap-2">
-          <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" className="w-5 h-5" /> Continue with Google
-        </button>
-        <p className="mt-4 text-sm text-center">Already have an account? <a href="/join-us" className="text-blue-600">Sign in</a></p>
-      </div>
+    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
+      <h2 className="text-2xl mb-4 font-bold text-center">Register</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <input {...register("name", { required: true })} type="text" placeholder="Full Name" className="input input-bordered w-full" />
+        <input {...register("email", { required: true })} type="email" placeholder="Email" className="input input-bordered w-full" />
+        <input {...register("password", { required: true })} type="password" placeholder="Password (min 6 characters)" className="input input-bordered w-full" />
+        <button type="submit" className="btn bg-black text-white w-full">Register</button>
+      </form>
+      <button onClick={handleGoogleRegister} className="btn btn-outline w-full mt-4">Register with Google</button>
+      <p className="mt-4 text-center">
+        Already have an account? <Link to="/join-us" className="text-blue-600 underline">Login</Link>
+      </p>
     </div>
-  )
-}
+  );
+};
+
+export default Register;
+
