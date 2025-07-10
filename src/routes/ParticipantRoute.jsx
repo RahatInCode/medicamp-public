@@ -5,6 +5,7 @@ import NotFound from "../pages/NotFound";
 import Register from "../features/auth/Register";
 import SignIn from "../features/auth/SignIn";
 import AvailableCamps from "../pages/AvailableCamps";
+import CampDetails from "../features/camps/CampDetails";
 
 export const router = createBrowserRouter([
   {
@@ -20,12 +21,24 @@ export const router = createBrowserRouter([
         Component: AvailableCamps,
       },
       {
+  path: "/camp/:campId",
+  Component: CampDetails,
+  loader: async ({ params }) => {
+    const response = await fetch(`http://localhost:3000/availableCamps/${params.campId}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch camp details");
+    }
+    return response.json();
+  },
+},
+
+      {
         path: "register",
-        element: <Register />
+        Component: Register,
       },
       {
         path: "join-us",
-        element: <SignIn />
+        Component: SignIn,
       }
     ],
   },
