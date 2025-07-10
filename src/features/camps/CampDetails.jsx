@@ -1,7 +1,8 @@
 // src/pages/CampDetails.jsx
 import { useParams } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from '../../api/axios';
+import axiosSecure from '../../api/axiosSecure';
+
 import { useState } from 'react';
 import {
   Calendar,
@@ -38,31 +39,32 @@ const CampDetails = () => {
     email: 'ashik@example.com',
   };
 
-  const { data: camp, isLoading, error } = useQuery({
-    queryKey: ['camp-details', campId],
-    queryFn: async () => {
-      const res = await axios.get(`/availableCamps/${campId}`);
-      return res.data;
-    },
-    enabled: !!campId,
-  });
+const { data: camp, isLoading, error } = useQuery({
+  queryKey: ['camp-details', campId],
+  queryFn: async () => {
+    const res = await axiosSecure.get(`/availableCamps/${campId}`);
+    return res.data;
+  },
+  enabled: !!campId,
+});
 
-  const registrationMutation = useMutation({
-    mutationFn: async (newRegistration) => {
-      await axios.post('/participantRegistrations', newRegistration);
-      await axios.patch(`/availableCamps/increment/${campId}`);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['camp-details', campId]);
-      setIsModalOpen(false);
-      setFormData({
-        age: '',
-        phone: '',
-        gender: '',
-        emergencyContact: '',
-      });
-    },
-  });
+
+ const registrationMutation = useMutation({
+  mutationFn: async (newRegistration) => {
+    await axiosSecure.post('/participantRegistrations', newRegistration);
+    await axiosSecure.patch(`/availableCamps/increment/${campId}`);
+  },
+  onSuccess: () => {
+    queryClient.invalidateQueries(['camp-details', campId]);
+    setIsModalOpen(false);
+    setFormData({
+      age: '',
+      phone: '',
+      gender: '',
+      emergencyContact: '',
+    });
+  },
+});
 
   if (isLoading) 
     return (

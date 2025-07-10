@@ -1,5 +1,5 @@
 // src/routes/ParticipantRoutes.jsx
-import { createBrowserRouter } from "react-router"; // ✅ Not 'react-router'
+import { createBrowserRouter } from "react-router"; 
 import MainLayout from "../layouts/MainLayout";
 import Home from "../components/homepage/Home";
 import NotFound from "../pages/NotFound";
@@ -32,19 +32,8 @@ const ParticipantRoutes = createBrowserRouter([
             <CampDetails />
           </PrivateRoute>
         ),
-        loader: async ({ params }) => {
-          const res = await fetch(`http://localhost:3000/availableCamps/${params.campId}`, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ Attach token
-            },
-          });
+         
 
-          if (!res.ok) {
-            throw new Response("Failed to load camp", { status: res.status });
-          }
-
-          return res.json();
-        },
       },
       {
         path: "register",

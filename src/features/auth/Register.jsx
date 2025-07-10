@@ -21,43 +21,54 @@ const Register = () => {
     }
 
     createUserWithEmailAndPassword(auth, email, password)
-  .then(async (userCredential) => {
-    console.log("✅ User registered:", userCredential.user);
-    await updateProfile(userCredential.user, { displayName: name });
+      .then(async (userCredential) => {
+        const user = userCredential.user;
+        console.log("✅ User registered:", user);
 
-    // Get the ID token (JWT)
-    const token = await userCredential.user.getIdToken();
+        await updateProfile(user, { displayName: name });
 
-    // Save token locally for API calls
-    localStorage.setItem('token', token);
-  })
-  .then(() => {
-    toast.success("🎉 Registration successful!");
-    navigate("/");
-  })
-  .catch((err) => {
-    console.error("❌ Registration error:", err.message);
-    toast.error("⚠️ Registration failed: " + err.message);
-  });
+        // Get Firebase JWT
+        const token = await user.getIdToken();
+        console.log("🔐 JWT Token:", token);
 
+        // Optional: send to backend
+        // await axiosSecure.post('/auth/register', { email, name }, {
+        //   headers: { Authorization: `Bearer ${token}` }
+        // });
+
+        localStorage.setItem("token", token);
+
+        toast.success("🎉 Registration successful!");
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error("❌ Registration error:", err.message);
+        toast.error("⚠️ Registration failed: " + err.message);
+      });
   };
 
   const handleGoogleRegister = () => {
-   signInWithPopup(auth, googleProvider)
-  .then(async (res) => {
-    console.log("✅ Google register:", res.user);
+    signInWithPopup(auth, googleProvider)
+      .then(async (res) => {
+        const user = res.user;
+        console.log("✅ Google register:", user);
 
-    const token = await res.user.getIdToken();
-    localStorage.setItem('token', token);
+        const token = await user.getIdToken();
+        console.log("🔐 Google JWT Token:", token);
 
-    toast.success("🎯 Google registration successful!");
-    navigate("/");
-  })
-  .catch((err) => {
-    console.error("❌ Google registration error:", err.message);
-    toast.error("⚠️ Google registration failed: " + err.message);
-  });
+        // Optional: send to backend
+        // await axiosSecure.post('/auth/google-register', { email: user.email }, {
+        //   headers: { Authorization: `Bearer ${token}` }
+        // });
 
+        localStorage.setItem("token", token);
+        toast.success("🎯 Google registration successful!");
+        navigate("/");
+      })
+      .catch((err) => {
+        console.error("❌ Google registration error:", err.message);
+        toast.error("⚠️ Google registration failed: " + err.message);
+      });
   };
 
   return (
@@ -103,5 +114,6 @@ const Register = () => {
 };
 
 export default Register;
+
 
 

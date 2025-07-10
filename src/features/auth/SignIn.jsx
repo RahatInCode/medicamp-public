@@ -8,6 +8,7 @@ import { auth } from '../../firebase/firebase.config';
 import { useNavigate, Link } from "react-router";
 import { toast } from "react-hot-toast";
 
+
 const ORGANIZER_EMAIL = "medicamporganizer@gmail.com";
 
 const SignIn = () => {
@@ -15,58 +16,67 @@ const SignIn = () => {
   const navigate = useNavigate();
   const googleProvider = new GoogleAuthProvider();
 
-  const onSubmit = ({ email, password }) => {
-    signInWithEmailAndPassword(auth, email, password)
-      .then(async (res) => {
-        console.log("✅ User signed in:", res.user);
+ const onSubmit = ({ email, password }) => {
+  signInWithEmailAndPassword(auth, email, password)
+    .then(async (res) => {
+      console.log("✅ User signed in:", res.user);
 
-        const token = await res.user.getIdToken();
-        localStorage.setItem('token', token);
+      const token = await res.user.getIdToken();
+      console.log("🔐 JWT Token:", token);
 
-        toast.success("Login successful!");
+      localStorage.setItem('token', token); // optional (if axios uses localStorage)
+      
+      toast.success("Login successful!");
 
-        // Role-based redirect
-        if (email.toLowerCase() === ORGANIZER_EMAIL) {
-          navigate("/organizer/dashboard");
-        } else {
-          navigate("/");
-        }
-      })
-      .catch((err) => {
-        console.error("❌ Login failed:", err.code);
-        if (
-          err.code.includes("auth/wrong-password") ||
-          err.code.includes("auth/user-not-found")
-        ) {
-          toast.error("Wrong email or password. Please check credentials.");
-        } else {
-          toast.error("Login failed. Try again.");
-        }
-      });
-  };
+    
+      // Role-based redirect
+      if (email.toLowerCase() === ORGANIZER_EMAIL) {
+        navigate("/organizer/dashboard");
+      } else {
+        navigate("/");
+      }
+    })
+    .catch((err) => {
+      console.error("❌ Login failed:", err.code);
+      if (
+        err.code.includes("auth/wrong-password") ||
+        err.code.includes("auth/user-not-found")
+      ) {
+        toast.error("Wrong email or password. Please check credentials.");
+      } else {
+        toast.error("Login failed. Try again.");
+      }
+    });
+};
 
-  const handleGoogleLogin = () => {
-    signInWithPopup(auth, googleProvider)
-      .then(async (res) => {
-        console.log("✅ Google login:", res.user);
 
-        const token = await res.user.getIdToken();
-        localStorage.setItem('token', token);
+ const handleGoogleLogin = () => {
+  signInWithPopup(auth, googleProvider)
+    .then(async (res) => {
+      console.log("✅ Google login successful:", res.user);
 
-        toast.success("Logged in with Google!");
+      const token = await res.user.getIdToken();
+      console.log("🔐 JWT Token:", token);
 
-        // Role-based redirect for Google sign-in
-        if (res.user.email?.toLowerCase() === ORGANIZER_EMAIL) {
-          navigate("/organizer/dashboard");
-        } else {
-          navigate("/");
-        }
-      })
-      .catch((err) => {
-        console.error("❌ Google login failed:", err.message);
-        toast.error("Google login failed");
-      });
-  };
+      localStorage.setItem('token', token); // optional
+
+      toast.success("Logged in with Google!");
+
+      // Optional backend sync
+      // await axiosSecure.post('/auth/google-login', { email: res.user.email }, { headers: { Authorization: `Bearer ${token}` } });
+
+      if (res.user.email?.toLowerCase() === ORGANIZER_EMAIL) {
+        navigate("/organizer/dashboard");
+      } else {
+        navigate("/");
+      }
+    })
+    .catch((err) => {
+      console.error("❌ Google login failed:", err.message);
+      toast.error("Google login failed");
+    });
+};
+
 
   return (
     <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
