@@ -74,7 +74,7 @@ const NavbarClient = () => {
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          to="/dashboard"
+                          to="/UserDashboard"
                           className={`block px-4 py-2 text-sm rounded-md ${
                             active ? "bg-gray-100 text-gray-900" : "text-gray-700"
                           }`}

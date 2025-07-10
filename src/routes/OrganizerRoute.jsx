@@ -1,11 +1,25 @@
-import React from 'react';
+// src/routes/OrganizerRoute.jsx
+import { createBrowserRouter } from "react-router";
+import OrganizerLayout from "../dashboard/organizer/OrganizerLayout";
+import OrganizerDashboard from "../dashboard/organizer/OrganizerDashboard";
+import PrivateRoute from "../components/PrivateRoute";
 
-const OrganizerRoute = () => {
-    return (
-        <div>
-            
-        </div>
-    );
-};
+const organizerRouter = createBrowserRouter([
+  {
+    path: "/organizer",
+    element: (
+      <PrivateRoute allowedRole="organizer">
+        <OrganizerLayout />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <OrganizerDashboard />,
+      },
+      // 👉 You can add more organizer-only pages here (like camp creation, reports, etc.)
+    ],
+  },
+]);
 
-export default OrganizerRoute;
+export default organizerRouter;

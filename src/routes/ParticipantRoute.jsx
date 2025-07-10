@@ -1,4 +1,5 @@
-import { createBrowserRouter } from "react-router";
+// src/routes/ParticipantRoutes.jsx
+import { createBrowserRouter } from "react-router"; // ✅ Not 'react-router'
 import MainLayout from "../layouts/MainLayout";
 import Home from "../components/homepage/Home";
 import NotFound from "../pages/NotFound";
@@ -6,46 +7,65 @@ import Register from "../features/auth/Register";
 import SignIn from "../features/auth/SignIn";
 import AvailableCamps from "../pages/AvailableCamps";
 import CampDetails from "../features/camps/CampDetails";
+import PrivateRoute from "./PrivateRoute";
+import UserDashboard from "../dashboard/participant/UserDashboard";
 
-export const router = createBrowserRouter([
+
+const ParticipantRoutes = createBrowserRouter([
   {
     path: "/",
-    Component: MainLayout,
+    element: <MainLayout />,
     children: [
       {
         index: true,
-        Component: Home,
+        element: <Home />,
       },
       {
         path: "camps",
-        Component: AvailableCamps,
+        element: <AvailableCamps />,
       },
       {
-  path: "/camp/:campId",
-  Component: CampDetails,
-  loader: async ({ params }) => {
-    const response = await fetch(`http://localhost:3000/availableCamps/${params.campId}`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch camp details");
-    }
-    return response.json();
-  },
-},
+        path: "camp/:campId",
+        element: (
+        
+          <PrivateRoute>
+            <CampDetails />
+          </PrivateRoute>
+        ),
+        loader: async ({ params }) => {
+          const res = await fetch(`http://localhost:3000/availableCamps/${params.campId}`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`, // ✅ Attach token
+            },
+          });
 
+          if (!res.ok) {
+            throw new Response("Failed to load camp", { status: res.status });
+          }
+
+          return res.json();
+        },
+      },
       {
         path: "register",
-        Component: Register,
+        element: <Register />,
       },
       {
         path: "join-us",
-        Component: SignIn,
+        element: <SignIn />,
+      },
+      {
+        path:"UserDashboard",
+        element : <PrivateRoute>
+          <UserDashboard />
+        </PrivateRoute>
       }
     ],
   },
-
- 
   {
     path: "*",
-    Component: NotFound, 
+    element: <NotFound />,
   },
 ]);
+
+export default ParticipantRoutes;

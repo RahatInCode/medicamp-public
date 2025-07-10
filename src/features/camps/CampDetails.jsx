@@ -3,6 +3,24 @@ import { useParams } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from '../../api/axios';
 import { useState } from 'react';
+import {
+  Calendar,
+  MapPin,
+  Stethoscope,
+  Users,
+  DollarSign,
+  Clock,
+  Phone,
+  User,
+  Mail,
+  X,
+  UserCheck,
+  Star,
+  Shield,
+  Heart,
+  CheckCircle,
+  AlertCircle,
+} from 'lucide-react';
 
 const CampDetails = () => {
   const { campId } = useParams();
@@ -46,8 +64,29 @@ const CampDetails = () => {
     },
   });
 
-  if (isLoading) return <p className="text-center py-10">Loading camp details...</p>;
-  if (error) return <p className="text-center py-10 text-red-500">Failed to load camp data.</p>;
+  if (isLoading) 
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-20 h-20 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-2xl font-semibold text-gray-700">Loading camp details...</p>
+          <p className="text-gray-500 mt-2">Please wait while we fetch the information</p>
+        </div>
+      </div>
+    );
+
+  if (error) 
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-pink-50 flex items-center justify-center">
+        <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
+          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <AlertCircle className="w-10 h-10 text-red-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-red-600 mb-2">Something went wrong</h2>
+          <p className="text-gray-500">Failed to load camp details. Please try again later.</p>
+        </div>
+      </div>
+    );
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,94 +110,309 @@ const CampDetails = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <img src={camp.image} alt={camp.campName} className="w-full rounded mb-4" />
-      <h2 className="text-3xl font-bold">{camp.campName}</h2>
-      <p className="text-gray-600 my-2">{camp.description}</p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
+      <div className="max-w-5xl mx-auto">
+        {/* Hero Section */}
+        <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8">
+          <div className="relative">
+            <img 
+              src={camp.image || 'https://via.placeholder.com/1200x400?text=Medical+Camp'} 
+              alt={camp.campName} 
+              className="w-full h-80 object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            <div className="absolute bottom-6 left-6 right-6 text-white">
+              <h1 className="text-4xl md:text-5xl font-bold mb-2">{camp.campName}</h1>
+              <div className="flex items-center gap-2 text-lg">
+                <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                <span>Featured Medical Camp</span>
+              </div>
+            </div>
+          </div>
+        </div>
 
-      <div className="space-y-2 text-gray-700 mt-4">
-        <p><strong>Fees:</strong> {camp.campFees} BDT</p>
-        <p><strong>Date & Time:</strong> {new Date(camp.dateTime).toLocaleString()}</p>
-        <p><strong>Location:</strong> {camp.location}</p>
-        <p><strong>Doctor:</strong> {camp.healthcareProfessional}</p>
-        <p><strong>Participants:</strong> {camp.participantCount}</p>
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Description */}
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <Heart className="w-6 h-6 text-red-500" />
+                About This Camp
+              </h2>
+              <p className="text-gray-600 leading-relaxed text-lg">
+                {camp.description}
+              </p>
+            </div>
+
+            {/* Features */}
+            <div className="bg-white rounded-2xl shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                <Shield className="w-6 h-6 text-blue-500" />
+                What's Included
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  'Free Health Checkup',
+                  'Professional Consultation',
+                  'Basic Medications',
+                  'Health Awareness Session',
+                  'Blood Pressure Monitoring',
+                  'BMI Assessment'
+                ].map((feature, index) => (
+                  <div key={index} className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <span className="text-gray-700">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Camp Info Card */}
+            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-6">
+              <h3 className="text-xl font-bold text-gray-800 mb-6">Camp Information</h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl">
+                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                    <DollarSign className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Registration Fee</p>
+                    <p className="text-xl font-bold text-blue-600">{camp.campFees} BDT</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 bg-green-50 rounded-xl">
+                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                    <Calendar className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Date & Time</p>
+                    <p className="font-semibold text-gray-800">{new Date(camp.dateTime).toLocaleString()}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 bg-purple-50 rounded-xl">
+                  <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+                    <MapPin className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Location</p>
+                    <p className="font-semibold text-gray-800">{camp.location}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 bg-orange-50 rounded-xl">
+                  <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
+                    <Stethoscope className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Healthcare Professional</p>
+                    <p className="font-semibold text-gray-800">{camp.healthcareProfessional}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4 p-4 bg-pink-50 rounded-xl">
+                  <div className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center">
+                    <Users className="w-6 h-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Participants</p>
+                    <p className="font-semibold text-gray-800">{camp.participantCount} registered</p>
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+              >
+                <UserCheck className="w-5 h-5" />
+                Join This Camp
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="mt-6 bg-black text-white px-5 py-2 rounded hover:bg-gray-800 transition"
-      >
-        Join Camp
-      </button>
-
+      {/* Registration Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-          <div className="bg-white rounded p-6 w-full max-w-lg relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-in fade-in duration-300">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-2 right-2 text-red-500 font-bold text-xl"
+              className="absolute top-6 right-6 w-10 h-10 bg-red-100 hover:bg-red-200 rounded-full flex items-center justify-center transition-colors z-10"
             >
-              &times;
+              <X className="w-5 h-5 text-red-500" />
             </button>
 
-            <h3 className="text-xl font-semibold mb-4">Camp Registration</h3>
-            <form onSubmit={handleSubmit} className="space-y-3">
-              {/* Read-only fields */}
-              <input type="text" value={camp.campName} readOnly className="input" />
-              <input type="text" value={camp.campFees} readOnly className="input" />
-              <input type="text" value={camp.location} readOnly className="input" />
-              <input type="text" value={camp.healthcareProfessional} readOnly className="input" />
-              <input type="text" value={loggedInUser.name} readOnly className="input" />
-              <input type="email" value={loggedInUser.email} readOnly className="input" />
+            <div className="p-8">
+              <div className="text-center mb-8">
+                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <UserCheck className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-3xl font-bold text-gray-800 mb-2">Camp Registration</h3>
+                <p className="text-gray-600">Fill in your details to join this amazing health camp</p>
+              </div>
 
-              {/* Editable fields */}
-              <input
-                type="number"
-                name="age"
-                placeholder="Your Age"
-                className="input"
-                value={formData.age}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="text"
-                name="phone"
-                placeholder="Phone Number"
-                className="input"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-              />
-              <select
-                name="gender"
-                className="input"
-                value={formData.gender}
-                onChange={handleChange}
-                required
-              >
-                <option value="">Select Gender</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-              </select>
-              <input
-                type="text"
-                name="emergencyContact"
-                placeholder="Emergency Contact"
-                className="input"
-                value={formData.emergencyContact}
-                onChange={handleChange}
-                required
-              />
-              <button
-                type="submit"
-                disabled={registrationMutation.isLoading}
-                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
-              >
-                {registrationMutation.isLoading ? 'Registering...' : 'Submit Registration'}
-              </button>
-            </form>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Read-only fields */}
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Camp Name</label>
+                    <input 
+                      type="text" 
+                      value={camp.campName} 
+                      readOnly 
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Registration Fee</label>
+                    <input 
+                      type="text" 
+                      value={`${camp.campFees} BDT`} 
+                      readOnly 
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                    <input 
+                      type="text" 
+                      value={camp.location} 
+                      readOnly 
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Healthcare Professional</label>
+                    <input 
+                      type="text" 
+                      value={camp.healthcareProfessional} 
+                      readOnly 
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
+                    <input 
+                      type="text" 
+                      value={loggedInUser.name} 
+                      readOnly 
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
+                    <input 
+                      type="email" 
+                      value={loggedInUser.email} 
+                      readOnly 
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="border-t pt-6">
+                  <h4 className="text-lg font-semibold text-gray-800 mb-4">Additional Information</h4>
+                  
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Age *</label>
+                      <input
+                        type="number"
+                        name="age"
+                        placeholder="Enter your age"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all"
+                        value={formData.age}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number *</label>
+                      <input
+                        type="text"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4 mt-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
+                      <select
+                        name="gender"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all"
+                        value={formData.gender}
+                        onChange={handleChange}
+                        required
+                      >
+                        <option value="">Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">Emergency Contact *</label>
+                      <input
+                        type="text"
+                        name="emergencyContact"
+                        placeholder="Emergency contact number"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all"
+                        value={formData.emergencyContact}
+                        onChange={handleChange}
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-4 pt-6">
+                  <button
+                    type="button"
+                    onClick={() => setIsModalOpen(false)}
+                    className="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 font-medium py-4 px-6 rounded-xl transition-all duration-200"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={registrationMutation.isLoading}
+                    className="flex-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 text-white font-bold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+                  >
+                    {registrationMutation.isLoading ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Registering...
+                      </>
+                    ) : (
+                      <>
+                        <CheckCircle className="w-5 h-5" />
+                        Complete Registration
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}

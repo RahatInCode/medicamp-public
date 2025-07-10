@@ -1,8 +1,14 @@
-import axios from 'axios';
+// frontend/src/api/axios.js
+import axios from "axios";
 
-const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000', // make sure this matches your backend
-  withCredentials: true,            // if you're using cookies
+const token = localStorage.getItem("token");
+
+const api = axios.create({
+  baseURL: "http://localhost:3000",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
 });
 
-export default axiosInstance;
+export default api;
+

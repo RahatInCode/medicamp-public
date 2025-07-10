@@ -2,11 +2,13 @@ import { useForm } from "react-hook-form";
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
-  GoogleAuthProvider
+  GoogleAuthProvider,
 } from "firebase/auth";
 import { auth } from '../../firebase/firebase.config';
 import { useNavigate, Link } from "react-router";
-import { toast } from "react-hot-toast"; // ✅ replaced sonner with hot-toast
+import { toast } from "react-hot-toast";
+
+const ORGANIZER_EMAIL = "medicamporganizer@gmail.com";
 
 const SignIn = () => {
   const { register, handleSubmit } = useForm();
@@ -15,10 +17,20 @@ const SignIn = () => {
 
   const onSubmit = ({ email, password }) => {
     signInWithEmailAndPassword(auth, email, password)
-      .then((res) => {
+      .then(async (res) => {
         console.log("✅ User signed in:", res.user);
+
+        const token = await res.user.getIdToken();
+        localStorage.setItem('token', token);
+
         toast.success("Login successful!");
-        navigate("/");
+
+        // Role-based redirect
+        if (email.toLowerCase() === ORGANIZER_EMAIL) {
+          navigate("/organizer/dashboard");
+        } else {
+          navigate("/");
+        }
       })
       .catch((err) => {
         console.error("❌ Login failed:", err.code);
@@ -35,13 +47,23 @@ const SignIn = () => {
 
   const handleGoogleLogin = () => {
     signInWithPopup(auth, googleProvider)
-      .then((res) => {
+      .then(async (res) => {
         console.log("✅ Google login:", res.user);
+
+        const token = await res.user.getIdToken();
+        localStorage.setItem('token', token);
+
         toast.success("Logged in with Google!");
-        navigate("/");
+
+        // Role-based redirect for Google sign-in
+        if (res.user.email?.toLowerCase() === ORGANIZER_EMAIL) {
+          navigate("/organizer/dashboard");
+        } else {
+          navigate("/");
+        }
       })
       .catch((err) => {
-        console.error("❌ Google login error:", err.message);
+        console.error("❌ Google login failed:", err.message);
         toast.error("Google login failed");
       });
   };
@@ -62,7 +84,9 @@ const SignIn = () => {
           placeholder="Password"
           className="input input-bordered w-full"
         />
-        <button type="submit" className="btn bg-black text-white w-full">Login</button>
+        <button type="submit" className="btn bg-black text-white w-full">
+          Login
+        </button>
       </form>
       <button
         onClick={handleGoogleLogin}
@@ -72,13 +96,16 @@ const SignIn = () => {
       </button>
       <p className="mt-4 text-center">
         Don&apos;t have an account?{" "}
-        <Link to="/register" className="text-blue-600 underline">Register</Link>
+        <Link to="/register" className="text-blue-600 underline">
+          Register
+        </Link>
       </p>
     </div>
   );
 };
 
 export default SignIn;
+
 
 
 
