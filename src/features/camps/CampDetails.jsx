@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosSecure from '../../api/axiosSecure';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Calendar,
   MapPin,
@@ -21,7 +21,64 @@ import {
   Heart,
   CheckCircle,
   AlertCircle,
+  XCircle,
 } from 'lucide-react';
+
+// Toast Component
+const Toast = ({ show, type, message, onClose }) => {
+  useEffect(() => {
+    if (show) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [show, onClose]);
+
+  if (!show) return null;
+
+  const getToastStyles = () => {
+    switch (type) {
+      case 'success':
+        return {
+          bg: 'bg-green-500',
+          icon: CheckCircle,
+          iconColor: 'text-white'
+        };
+      case 'error':
+        return {
+          bg: 'bg-red-500',
+          icon: XCircle,
+          iconColor: 'text-white'
+        };
+      default:
+        return {
+          bg: 'bg-blue-500',
+          icon: CheckCircle,
+          iconColor: 'text-white'
+        };
+    }
+  };
+
+  const { bg, icon: Icon, iconColor } = getToastStyles();
+
+  return (
+    <div className="fixed top-4 right-4 z-[9999] animate-in slide-in-from-top-2 duration-300">
+      <div className={`${bg} text-white px-6 py-4 rounded-xl shadow-2xl max-w-md flex items-center gap-3 transform transition-all duration-300 hover:scale-105`}>
+        <Icon className={`w-6 h-6 ${iconColor} flex-shrink-0`} />
+        <div className="flex-1">
+          <p className="font-medium text-white">{message}</p>
+        </div>
+        <button
+          onClick={onClose}
+          className="text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white/10"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
 
 const CampDetails = () => {
   const { campId } = useParams();
@@ -34,9 +91,28 @@ const CampDetails = () => {
     emergencyContact: '',
   });
 
+  // Toast state
+  const [toast, setToast] = useState({
+    show: false,
+    type: 'success',
+    message: ''
+  });
+
   const loggedInUser = {
     name: 'Ashik Mia', // Replace with real user context
     email: 'ashik@example.com',
+  };
+
+  const showToast = (type, message) => {
+    setToast({
+      show: true,
+      type,
+      message
+    });
+  };
+
+  const hideToast = () => {
+    setToast(prev => ({ ...prev, show: false }));
   };
 
 const { data: camp, isLoading, error } = useQuery({
@@ -47,7 +123,6 @@ const { data: camp, isLoading, error } = useQuery({
   },
   enabled: !!campId,
 });
-
 
  const registrationMutation = useMutation({
   mutationFn: async (newRegistration) => {
@@ -63,6 +138,11 @@ const { data: camp, isLoading, error } = useQuery({
       gender: '',
       emergencyContact: '',
     });
+    showToast('success', `🎉 Successfully registered for "${camp.campName}"! We'll see you there.`);
+  },
+  onError: (error) => {
+    console.error('Registration failed:', error);
+    showToast('error', 'Registration failed. Please try again or contact support.');
   },
 });
 
@@ -97,6 +177,13 @@ const { data: camp, isLoading, error } = useQuery({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!formData.age || !formData.phone || !formData.gender || !formData.emergencyContact) {
+      showToast('error', 'Please fill in all required fields.');
+      return;
+    }
+
     const registration = {
       campId,
       campName: camp.campName,
@@ -113,6 +200,14 @@ const { data: camp, isLoading, error } = useQuery({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
+      {/* Toast Component */}
+      <Toast 
+        show={toast.show} 
+        type={toast.type} 
+        message={toast.message} 
+        onClose={hideToast} 
+      />
+
       <div className="max-w-5xl mx-auto">
         {/* Hero Section */}
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8">
@@ -243,7 +338,7 @@ const { data: camp, isLoading, error } = useQuery({
 
       {/* Registration Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div className="fixed inset-0 bg-slate-300 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
           <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-in fade-in duration-300">
             <button
               onClick={() => setIsModalOpen(false)}

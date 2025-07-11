@@ -19,10 +19,10 @@ const SignIn = () => {
  const onSubmit = ({ email, password }) => {
   signInWithEmailAndPassword(auth, email, password)
     .then(async (res) => {
-      console.log("✅ User signed in:", res.user);
+      // console.log("✅ User signed in:", res.user);
 
       const token = await res.user.getIdToken();
-      console.log("🔐 JWT Token:", token);
+      // console.log("🔐 JWT Token:", token);
 
       localStorage.setItem('token', token); // optional (if axios uses localStorage)
       
