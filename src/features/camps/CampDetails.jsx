@@ -1,30 +1,14 @@
 // src/pages/CampDetails.jsx
-import { useParams } from 'react-router';
+import { useParams } from 'react-router'; 
+import { Calendar, DollarSign, Heart, MapPin, Shield, Star, Stethoscope, UserCheck, Users } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosSecure from '../../api/axiosSecure';
-
 import { useState, useEffect } from 'react';
 import {
-  Calendar,
-  MapPin,
-  Stethoscope,
-  Users,
-  DollarSign,
-  Clock,
-  Phone,
-  User,
-  Mail,
-  X,
-  UserCheck,
-  Star,
-  Shield,
-  Heart,
-  CheckCircle,
-  AlertCircle,
-  XCircle,
+  CheckCircle, XCircle, X, AlertCircle
 } from 'lucide-react';
 
-// Toast Component
+// ✅ Toast Component (unchanged)
 const Toast = ({ show, type, message, onClose }) => {
   useEffect(() => {
     if (show) {
@@ -40,23 +24,11 @@ const Toast = ({ show, type, message, onClose }) => {
   const getToastStyles = () => {
     switch (type) {
       case 'success':
-        return {
-          bg: 'bg-green-500',
-          icon: CheckCircle,
-          iconColor: 'text-white'
-        };
+        return { bg: 'bg-green-500', icon: CheckCircle, iconColor: 'text-white' };
       case 'error':
-        return {
-          bg: 'bg-red-500',
-          icon: XCircle,
-          iconColor: 'text-white'
-        };
+        return { bg: 'bg-red-500', icon: XCircle, iconColor: 'text-white' };
       default:
-        return {
-          bg: 'bg-blue-500',
-          icon: CheckCircle,
-          iconColor: 'text-white'
-        };
+        return { bg: 'bg-blue-500', icon: CheckCircle, iconColor: 'text-white' };
     }
   };
 
@@ -69,10 +41,7 @@ const Toast = ({ show, type, message, onClose }) => {
         <div className="flex-1">
           <p className="font-medium text-white">{message}</p>
         </div>
-        <button
-          onClick={onClose}
-          className="text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white/10"
-        >
+        <button onClick={onClose} className="text-white hover:text-gray-200 transition-colors p-1 rounded-full hover:bg-white/10">
           <X className="w-4 h-4" />
         </button>
       </div>
@@ -81,8 +50,9 @@ const Toast = ({ show, type, message, onClose }) => {
 };
 
 const CampDetails = () => {
-  const { campId } = useParams();
+  const { campId } = useParams(); // ✅ Must be defined as :campId in your Route
   const queryClient = useQueryClient();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     age: '',
@@ -91,84 +61,48 @@ const CampDetails = () => {
     emergencyContact: '',
   });
 
-  // Toast state
-  const [toast, setToast] = useState({
-    show: false,
-    type: 'success',
-    message: ''
-  });
+  const [toast, setToast] = useState({ show: false, type: 'success', message: '' });
 
   const loggedInUser = {
-    name: 'Ashik Mia', // Replace with real user context
+    name: 'Ashik Mia', // TODO: Replace with actual user context
     email: 'ashik@example.com',
   };
 
-  const showToast = (type, message) => {
-    setToast({
-      show: true,
-      type,
-      message
-    });
-  };
+  const showToast = (type, message) => setToast({ show: true, type, message });
+  const hideToast = () => setToast(prev => ({ ...prev, show: false }));
 
-  const hideToast = () => {
-    setToast(prev => ({ ...prev, show: false }));
-  };
+  // ✅ Camp Fetch
+  const {
+    data: camp,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['camp-details', campId],
+    queryFn: async () => {
+      console.log("Fetching camp for ID:", campId); // 🔍 Debug
+      const res = await axiosSecure.get(`/camps/${campId}`);
+      return res.data;
+    },
+    enabled: !!campId,
+  });
 
-const { data: camp, isLoading, error } = useQuery({
-  queryKey: ['camp-details', campId],
-  queryFn: async () => {
-    const res = await axiosSecure.get(`/availableCamps/${campId}`);
-    return res.data;
-  },
-  enabled: !!campId,
-});
-
- const registrationMutation = useMutation({
-  mutationFn: async (newRegistration) => {
-    await axiosSecure.post('/participantRegistrations', newRegistration);
-    await axiosSecure.patch(`/availableCamps/increment/${campId}`);
-  },
-  onSuccess: () => {
-    queryClient.invalidateQueries(['camp-details', campId]);
-    setIsModalOpen(false);
-    setFormData({
-      age: '',
-      phone: '',
-      gender: '',
-      emergencyContact: '',
-    });
-    showToast('success', `🎉 Successfully registered for "${camp.campName}"! We'll see you there.`);
-  },
-  onError: (error) => {
-    console.error('Registration failed:', error);
-    showToast('error', 'Registration failed. Please try again or contact support.');
-  },
-});
-
-  if (isLoading) 
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-20 h-20 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-          <p className="text-2xl font-semibold text-gray-700">Loading camp details...</p>
-          <p className="text-gray-500 mt-2">Please wait while we fetch the information</p>
-        </div>
-      </div>
-    );
-
-  if (error) 
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-pink-50 flex items-center justify-center">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-xl max-w-md">
-          <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <AlertCircle className="w-10 h-10 text-red-500" />
-          </div>
-          <h2 className="text-2xl font-bold text-red-600 mb-2">Something went wrong</h2>
-          <p className="text-gray-500">Failed to load camp details. Please try again later.</p>
-        </div>
-      </div>
-    );
+  // ✅ Registration
+  const registrationMutation = useMutation({
+    mutationFn: async (newRegistration) => {
+      await axiosSecure.post('/participantRegistrations', newRegistration);
+      await axiosSecure.patch(`/camps/increment/${campId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries(['camp-details', campId]);
+      setIsModalOpen(false);
+      setFormData({ age: '', phone: '', gender: '', emergencyContact: '' });
+      showToast('success', `🎉 Registered for "${camp?.campName}" successfully!`);
+    },
+    onError: (error) => {
+      console.error('Registration failed:', error);
+      showToast('error', 'Registration failed. Please try again.');
+    },
+  });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -177,8 +111,7 @@ const { data: camp, isLoading, error } = useQuery({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Basic validation
+
     if (!formData.age || !formData.phone || !formData.gender || !formData.emergencyContact) {
       showToast('error', 'Please fill in all required fields.');
       return;
@@ -186,10 +119,10 @@ const { data: camp, isLoading, error } = useQuery({
 
     const registration = {
       campId,
-      campName: camp.campName,
-      campFees: camp.campFees,
-      location: camp.location,
-      healthcareProfessional: camp.healthcareProfessional,
+      campName: camp?.campName,
+      campFees: camp?.campFees,
+      location: camp?.location,
+      healthcareProfessional: camp?.healthcareProfessional,
       participantName: loggedInUser.name,
       participantEmail: loggedInUser.email,
       ...formData,
@@ -197,6 +130,29 @@ const { data: camp, isLoading, error } = useQuery({
 
     registrationMutation.mutate(registration);
   };
+
+  // ✅ Loading UI
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <p className="text-lg font-medium text-gray-600">Loading camp details...</p>
+      </div>
+    );
+  }
+
+  // ✅ Error UI
+  if (error) {
+    console.error("❌ Camp fetch failed:", error.message, error.response?.data);
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-red-50">
+        <div className="text-center p-8 bg-white rounded-xl shadow">
+          <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
+          <h2 className="text-xl font-bold text-red-600 mb-2">Error loading camp</h2>
+          <p className="text-gray-500">{error.response?.data?.message || "Please try again later."}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">

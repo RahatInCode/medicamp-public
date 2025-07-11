@@ -24,17 +24,12 @@ const ParticipantRoutes = createBrowserRouter([
         path: "camps",
         element: <AvailableCamps />,
       },
-      {
-        path: "camp/:campId",
-        element: (
-        
-          <PrivateRoute>
-            <CampDetails />
-          </PrivateRoute>
-        ),
-         
-
-      },
+     {
+      path:"/camp/:campId",
+      element: <PrivateRoute>
+        <CampDetails></CampDetails>
+      </PrivateRoute>
+     },
       {
         path: "register",
         element: <Register />,

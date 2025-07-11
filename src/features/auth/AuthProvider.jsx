@@ -9,23 +9,35 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setLoading(true);
-      if (currentUser) {
-        setUser(currentUser);
-        const idToken = await currentUser.getIdToken();
-        setToken(idToken);
-        localStorage.setItem("token", idToken);
-      } else {
-        setUser(null);
-        setToken(null);
-        localStorage.removeItem("token");
-      }
-      setLoading(false);
-    });
+  const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    setLoading(true);
+    setUser(currentUser);
+    if (currentUser) {
+      const idToken = await currentUser.getIdToken();
+      localStorage.setItem("token", idToken); 
+      setToken(idToken);
 
-    return () => unsubscribe();
-  }, []);
+      await fetch("http://localhost:3000/users", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          name: currentUser.displayName,
+          email: currentUser.email,
+        }),
+      });
+    } else {
+      localStorage.removeItem("token"); 
+      setToken(null);
+    }
+    setLoading(false);
+  });
+
+  return () => unsubscribe();
+}, []);
+
 
   return (
     <AuthContext.Provider value={{ user, token, loading }}>

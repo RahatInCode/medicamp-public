@@ -27,7 +27,7 @@ const AvailableCamps = () => {
   const { data: camps = [], isLoading, error } = useQuery({
     queryKey: ['available-camps'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:3000/availableCamps');
+      const res = await axios.get('http://localhost:3000/camps');
       return res.data;
     },
   });
