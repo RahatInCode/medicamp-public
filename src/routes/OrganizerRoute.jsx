@@ -1,30 +1,48 @@
-import OrganizerProfile from "./components/organizer/OrganizerProfile";
-import AddCamp from "./components/organizer/AddCamp";
-import ManageCamps from "./components/organizer/ManageCamps";
-import ManageRegistered from "./components/organizer/ManageRegistered";
+import { Navigate, Outlet, Routes, Route } from "react-router"  // react-router-dom, NOT react-router
+import { useContext } from "react"
+import { AuthContext } from "../features/auth/AuthContext"
+import { useQuery } from "@tanstack/react-query"
+import axiosSecure from "../api/axiosSecure"
+import OrganizerDashboard from "../dashboard/organizer/OrganizerDashboardLayout"
+import ManageCamps from "../dashboard/organizer/ManageCamps"
 
 
+const OrganizerRoute = () => {
+  const { user } = useContext(AuthContext)
 
-function AppRoutes() {
-  return (
-    <Routes>
-      {/* Organizer protected routes */}
-      <Route element={<PrivateRoute />}>
-        <Route element={<RoleRoute role="organizer" />}>
-          <Route path="/organizer" element={<OrganizerDashboardLayout />}>
-            <Route index element={<OrganizerProfile />} />
-            <Route path="profile" element={<OrganizerProfile />} />
-            <Route path="add-camp" element={<AddCamp />} />
-            <Route path="manage-camps" element={<ManageCamps />} />
-            <Route path="manage-registered" element={<ManageRegistered />} />
-          </Route>
-        </Route>
-      </Route>
+  const { data: userData, isLoading, isError } =useQuery({
+  queryKey: ["userRole", user?.email],
+  queryFn: async () => {
+    if (!user?.email) throw new Error("No user email")
+    const res = await axiosSecure.get(`/users/${user.email}`)
+    return res.data
+  },
+  enabled: !!user?.email,
+  retry: false,
+})
 
-      {/* Your other routes here */}
-    </Routes>
-  );
+
+  if (isLoading) return <p>Loading...</p>
+  if (isError || !userData?.role || userData.role !== "organizer") {
+    return <Navigate to="/" replace />
+  }
+
+  return <Outlet />
 }
 
-export default AppRoutes;
+const OrganizerRoutes = () => {
+  return (
+    <Routes>
+      <Route element={<OrganizerRoute />}>
+        <Route path="dashboard" element={<OrganizerDashboard />} />
+        <Route path="manageCamps" element={<ManageCamps />} />
+        {/* Add more organizer routes here */}
+      </Route>
+    </Routes>
+  )
+}
+
+export { OrganizerRoutes, OrganizerRoute }
+
+
 

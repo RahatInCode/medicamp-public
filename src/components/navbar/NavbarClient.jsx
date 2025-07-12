@@ -1,26 +1,37 @@
 "use client"
-import { Fragment, useEffect, useState } from "react"
+import { Fragment, useState, useContext } from "react"
 import { Menu, Transition } from "@headlessui/react"
 import { Link, useNavigate } from "react-router"
-import { onAuthStateChanged, signOut } from "firebase/auth"
+import { signOut } from "firebase/auth"
 import { auth } from "../../firebase/firebase.config"
+import { AuthContext } from "../../features/auth/AuthContext";
+import { useQuery } from "@tanstack/react-query"
+import axios from "../../api/axiosSecure"
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/solid"
 
 const NavbarClient = () => {
-  const [user, setUser] = useState(null)
+  const { user } = useContext(AuthContext)
+  const [menuOpen, setMenuOpen] = useState(false)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser)
-    })
-    return () => unsubscribe()
-  }, [])
+  const { data: userData = {} } = useQuery({
+    
+    queryKey: ["userRole", user?.email],
+    queryFn: async () => {
+      const res = await axios.get(`/users/${user?.email}`)
+      console.log("userData:", userData);
+      return res.data
+    },
+    enabled: !!user?.email,
+  })
 
   const handleLogout = async () => {
     await signOut(auth)
-    setUser(null)
     navigate("/")
   }
+
+  const dashboardPath =
+    userData?.role === "organizer" ? "/organizer/dashboard" : "/userDashboard"
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -33,10 +44,26 @@ const NavbarClient = () => {
           <span className="text-black">MediCamp</span>
         </Link>
 
-        {/* Navigation */}
-        <div className="flex items-center gap-6">
-          <Link to="/" className="text-gray-700 hover:text-black font-medium">Home</Link>
-          <Link to="/camps" className="text-gray-700 hover:text-black font-medium">Available Camps</Link>
+        {/* Mobile Hamburger */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="sm:hidden block text-gray-700 focus:outline-none"
+        >
+          {menuOpen ? (
+            <XMarkIcon className="h-6 w-6" />
+          ) : (
+            <Bars3Icon className="h-6 w-6" />
+          )}
+        </button>
+
+        {/* Desktop Menu */}
+        <div className="hidden sm:flex items-center gap-6">
+          <Link to="/" className="text-gray-700 hover:text-black font-medium">
+            Home
+          </Link>
+          <Link to="/camps" className="text-gray-700 hover:text-black font-medium">
+            Available Camps
+          </Link>
 
           {!user ? (
             <Link
@@ -49,7 +76,10 @@ const NavbarClient = () => {
             <Menu as="div" className="relative">
               <Menu.Button className="focus:outline-none group">
                 <img
-                  src={user?.photoURL || `https://ui-avatars.com/api/?name=${user?.displayName || "U"}`}
+                  src={
+                    user?.photoURL ||
+                    `https://ui-avatars.com/api/?name=${user?.displayName || "U"}`
+                  }
                   alt="avatar"
                   className="w-10 h-10 rounded-full object-cover border-2 border-gray-300 group-hover:border-black transition"
                   title={user.displayName}
@@ -67,14 +97,14 @@ const NavbarClient = () => {
               >
                 <Menu.Items className="absolute right-0 mt-2 w-64 origin-top-right bg-white divide-y divide-gray-100 rounded-xl shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
                   <div className="px-4 py-3">
-                    <p className="text-sm  font-semibold text-gray-900">{user?.displayName}</p>
+                    <p className="text-sm font-semibold text-gray-900">{user?.displayName}</p>
                     <p className="text-sm text-gray-600">{user?.email}</p>
                   </div>
                   <div className="py-1">
                     <Menu.Item>
                       {({ active }) => (
                         <Link
-                          to="/UserDashboard"
+                          to={dashboardPath}
                           className={`block px-4 py-2 text-sm rounded-md ${
                             active ? "bg-gray-100 text-gray-900" : "text-gray-700"
                           }`}
@@ -102,11 +132,45 @@ const NavbarClient = () => {
           )}
         </div>
       </div>
+
+      {/* Mobile menu */}
+      {menuOpen && (
+        <div className="sm:hidden px-4 pb-4 space-y-2">
+          <Link to="/" className="block text-gray-700 font-medium">
+            Home
+          </Link>
+          <Link to="/camps" className="block text-gray-700 font-medium">
+            Available Camps
+          </Link>
+          {user ? (
+            <>
+              <Link to={dashboardPath} className="block text-gray-700 font-medium">
+                Dashboard
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="block text-red-600 font-medium"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/register"
+              className="block bg-black text-white px-4 py-2 rounded-full text-center"
+            >
+              Join Us
+            </Link>
+          )}
+        </div>
+      )}
     </nav>
   )
 }
 
 export default NavbarClient
+
+
 
 
 

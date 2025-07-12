@@ -18,16 +18,18 @@ const AuthProvider = ({ children }) => {
       setToken(idToken);
 
       await fetch("http://localhost:3000/users", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({
-          name: currentUser.displayName,
-          email: currentUser.email,
-        }),
-      });
+  method: "PUT",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${idToken}`,
+  },
+  body: JSON.stringify({
+    name: currentUser.displayName,
+    email: currentUser.email,
+    role: currentUser.email === "organizer@medicamp.com" ? "organizer" : "participant",
+  }),
+});
+
     } else {
       localStorage.removeItem("token"); 
       setToken(null);

@@ -27,16 +27,19 @@ const Register = () => {
 
         await updateProfile(user, { displayName: name });
 
-        // Get Firebase JWT
         const token = await user.getIdToken();
         console.log("🔐 JWT Token:", token);
-
-        // Optional: send to backend
-        // await axiosSecure.post('/auth/register', { email, name }, {
-        //   headers: { Authorization: `Bearer ${token}` }
-        // });
-
         localStorage.setItem("token", token);
+
+        // ✅ Immediately update MongoDB
+        await fetch("http://localhost:3000/users", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ name, email }),
+        });
 
         toast.success("🎉 Registration successful!");
         navigate("/");
@@ -54,14 +57,22 @@ const Register = () => {
         console.log("✅ Google register:", user);
 
         const token = await user.getIdToken();
-        console.log("🔐 Google JWT Token:", token);
-
-        // Optional: send to backend
-        // await axiosSecure.post('/auth/google-register', { email: user.email }, {
-        //   headers: { Authorization: `Bearer ${token}` }
-        // });
+        const name = user.displayName || "Google User";
+        const email = user.email;
 
         localStorage.setItem("token", token);
+        console.log("🔐 Google JWT Token:", token);
+
+        // ✅ Update MongoDB immediately
+        await fetch("http://localhost:3000/users", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ name, email }),
+        });
+
         toast.success("🎯 Google registration successful!");
         navigate("/");
       })
@@ -114,6 +125,7 @@ const Register = () => {
 };
 
 export default Register;
+
 
 
 

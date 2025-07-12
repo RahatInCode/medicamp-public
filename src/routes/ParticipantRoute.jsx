@@ -9,6 +9,7 @@ import AvailableCamps from "../pages/AvailableCamps";
 import CampDetails from "../features/camps/CampDetails";
 import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../dashboard/participant/UserDashboard";
+import { OrganizerRoutes } from "./OrganizerRoute";
 
 
 const ParticipantRoutes = createBrowserRouter([
@@ -43,7 +44,11 @@ const ParticipantRoutes = createBrowserRouter([
         element : <PrivateRoute>
           <UserDashboard />
         </PrivateRoute>
-      }
+      },
+      {
+      path:"/organizer/*",
+      element:<OrganizerRoutes></OrganizerRoutes>
+      },
     ],
   },
   {
