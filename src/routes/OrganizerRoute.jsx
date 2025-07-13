@@ -4,7 +4,10 @@ import { AuthContext } from "../features/auth/AuthContext"
 import { useQuery } from "@tanstack/react-query"
 import axiosSecure from "../api/axiosSecure"
 import OrganizerDashboard from "../dashboard/organizer/OrganizerDashboardLayout"
-import ManageCamps from "../dashboard/organizer/ManageCamps"
+import ManageCamps from "../dashboard/organizer/manageCamps/ManageCamps"
+import OrganizerProfile from "../dashboard/organizer/OrganizerProfile"
+import ManageRegistered from "../dashboard/organizer/manageCamps/ManageRegistered"
+import AddCamp from "../dashboard/organizer/manageCamps/AddCamp"
 
 
 const OrganizerRoute = () => {
@@ -34,9 +37,13 @@ const OrganizerRoutes = () => {
   return (
     <Routes>
       <Route element={<OrganizerRoute />}>
-        <Route path="dashboard" element={<OrganizerDashboard />} />
-        <Route path="manageCamps" element={<ManageCamps />} />
-        {/* Add more organizer routes here */}
+       <Route path="dashboard" element={<OrganizerDashboard />}>
+  <Route path="organizer-profile" element={<OrganizerProfile />} />
+  <Route path="add-camp" element={<AddCamp></AddCamp>} />
+  <Route path="manage-camps" element={<ManageCamps />} />
+  <Route path="manage-registered" element={<ManageRegistered />} />
+</Route>
+
       </Route>
     </Routes>
   )

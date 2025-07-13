@@ -3,10 +3,11 @@ import { useParams } from 'react-router';
 import { Calendar, DollarSign, Heart, MapPin, Shield, Star, Stethoscope, UserCheck, Users } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosSecure from '../../api/axiosSecure';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import {
   CheckCircle, XCircle, X, AlertCircle
 } from 'lucide-react';
+import { AuthContext } from '../auth/AuthContext';
 
 // ✅ Toast Component (unchanged)
 const Toast = ({ show, type, message, onClose }) => {
@@ -52,7 +53,7 @@ const Toast = ({ show, type, message, onClose }) => {
 const CampDetails = () => {
   const { campId } = useParams(); // ✅ Must be defined as :campId in your Route
   const queryClient = useQueryClient();
-
+const { user } = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     age: '',
@@ -64,8 +65,9 @@ const CampDetails = () => {
   const [toast, setToast] = useState({ show: false, type: 'success', message: '' });
 
   const loggedInUser = {
-    name: 'Ashik Mia', // TODO: Replace with actual user context
-    email: 'ashik@example.com',
+    participantName: user?.displayName || "Anonymous",
+participantEmail: user?.email || "no-email@error.com",
+
   };
 
   const showToast = (type, message) => setToast({ show: true, type, message });
@@ -77,10 +79,13 @@ const CampDetails = () => {
     isLoading,
     error,
   } = useQuery({
+    
     queryKey: ['camp-details', campId],
     queryFn: async () => {
       console.log("Fetching camp for ID:", campId); // 🔍 Debug
       const res = await axiosSecure.get(`/camps/${campId}`);
+     console.log("🧠 Full Camp Object:", res.data);
+
       return res.data;
     },
     enabled: !!campId,
@@ -108,25 +113,36 @@ const CampDetails = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+if (!campId) {
+  showToast("error", "Missing camp ID!");
+  return;
+}
+console.log("Registering with camp ID:", campId); 
+const organizerEmail = camp?.organizerEmail;
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!formData.age || !formData.phone || !formData.gender || !formData.emergencyContact) {
-      showToast('error', 'Please fill in all required fields.');
-      return;
-    }
+if (!organizerEmail) {
+  showToast('error', 'Organizer email not found. Please wait or try again.');
+  return;
+}
 
-    const registration = {
-      campId,
-      campName: camp?.campName,
-      campFees: camp?.campFees,
-      location: camp?.location,
-      healthcareProfessional: camp?.healthcareProfessional,
-      participantName: loggedInUser.name,
-      participantEmail: loggedInUser.email,
-      ...formData,
-    };
+
+const registration = {
+  campId,
+  campName: camp?.campName,
+  campFees: camp?.campFees,
+  location: camp?.location,
+  healthcareProfessional: camp?.healthcareProfessional,
+  organizerEmail,
+  participantName: loggedInUser.participantName,
+  participantEmail: loggedInUser.participantEmail,
+  ...formData,
+};
+
+
 
     registrationMutation.mutate(registration);
   };
@@ -361,7 +377,7 @@ const CampDetails = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Your Name</label>
                     <input 
                       type="text" 
-                      value={loggedInUser.name} 
+                        value={loggedInUser.participantName}
                       readOnly 
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
                     />
@@ -370,7 +386,7 @@ const CampDetails = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                     <input 
                       type="email" 
-                      value={loggedInUser.email} 
+                        value={loggedInUser.participantEmail}
                       readOnly 
                       className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
                     />

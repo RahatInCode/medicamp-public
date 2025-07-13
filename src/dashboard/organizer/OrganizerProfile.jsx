@@ -1,4 +1,11 @@
-// OrganizerProfile.jsx
-export default function OrganizerProfile() {
-  return <h1 className="text-3xl font-bold">Organizer Profile Page</h1>;
-}
+import React from 'react';
+
+const OrganizerProfile = () => {
+  return (
+    <div>
+      <h2>dhaiohfioahfahf</h2>
+    </div>
+  );
+};
+
+export default OrganizerProfile;

@@ -10,8 +10,13 @@ axiosSecure.interceptors.request.use(async (config) => {
   const user = auth.currentUser;
 
   if (user) {
-    const token = await user.getIdToken(); // ✅ Always get fresh token
+    const token = localStorage.getItem("token"); // ✅ Always get fresh token
+     if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+} (error) => {
+  return Promise.reject(error);
   }
 
   return config;
