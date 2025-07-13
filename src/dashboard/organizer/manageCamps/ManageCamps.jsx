@@ -1,12 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Dialog } from "@headlessui/react";
 import toast, { Toaster } from "react-hot-toast";
 import axiosSecure from "../../../api/axiosSecure";
 import { useNavigate } from "react-router";
+import { AuthContext } from "../../../features/auth/AuthContext";
+import { Pencil, Trash2 } from "lucide-react";
 
 export default function ManageCamps() {
   const navigate = useNavigate();
-  const userEmail = JSON.parse(localStorage.getItem("user"))?.email; // adjust if different
+  const { user, loading: authLoading } = useContext(AuthContext);
   const [camps, setCamps] = useState([]);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
@@ -15,29 +17,36 @@ export default function ManageCamps() {
   const [limit] = useState(5);
   const [selectedCamp, setSelectedCamp] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Fetch camps
   useEffect(() => {
+    if (!user?.email) return;
+
+    setLoading(true);
     const delayDebounce = setTimeout(() => {
       axiosSecure
-        .get(`/camps/organizer/${userEmail}`, {
+        .get(`/participantRegistrations/organizer/${user.email}`, {
           params: { search, sortBy, page, limit },
         })
         .then((res) => {
-          setCamps(res.data.camps);
-          setTotal(res.data.total);
+          setCamps(res.data.camps || res.data);
+          setTotal(res.data.total || res.data.length || 0);
         })
-        .catch(() => toast.error("Failed to load camps"));
-    }, 300); // debounce
+        .catch((err) => {
+          toast.error("Failed to load camps");
+          console.error("Error fetching camps:", err);
+        })
+        .finally(() => setLoading(false));
+    }, 300);
 
     return () => clearTimeout(delayDebounce);
-  }, [search, sortBy, page, limit, userEmail]);
+  }, [user?.email, search, sortBy, page, limit]);
 
   const totalPages = Math.ceil(total / limit);
 
   const handleDelete = () => {
     axiosSecure
-      .delete(`/delete-camp/${selectedCamp?._id}`)
+      .delete(`/camps/delete-camp/${selectedCamp?._id}`)
       .then(() => {
         toast.success("Camp deleted!");
         setCamps((prev) => prev.filter((c) => c._id !== selectedCamp._id));
@@ -46,22 +55,27 @@ export default function ManageCamps() {
       .catch(() => toast.error("Delete failed"));
   };
 
+  if (authLoading) return <p className="p-6 text-gray-800">Loading user info...</p>;
+  if (!user?.email) return <p className="p-6 text-gray-800">Please login to manage camps.</p>;
+
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-7xl mx-auto bg-white min-h-screen text-gray-900">
       <Toaster />
-      <h2 className="text-2xl font-bold mb-4">🎯 Manage Your Camps</h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-black">
+        🎯 Manage Your Camps
+      </h2>
 
       {/* Search & Sort */}
-      <div className="flex flex-wrap gap-4 mb-4">
+      <div className="flex flex-wrap justify-between gap-4 mb-6">
         <input
-          className="border p-2 rounded w-64"
+          className="border border-gray-300 focus:ring-2 focus:ring-blue-400 p-2 rounded-md w-full sm:w-64 text-gray-800"
           type="text"
           placeholder="Search by name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
         <select
-          className="border p-2 rounded"
+          className="border border-gray-300 p-2 rounded-md w-full sm:w-48 text-gray-800"
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
         >
@@ -72,65 +86,67 @@ export default function ManageCamps() {
       </div>
 
       {/* Camps Table */}
-      <div className="overflow-x-auto">
-        <table className="min-w-full border rounded shadow-sm">
-          <thead className="bg-gray-100 text-left">
-            <tr>
-              <th className="p-3">Name</th>
-              <th className="p-3">Date & Time</th>
-              <th className="p-3">Location</th>
-              <th className="p-3">Healthcare Pro</th>
-              <th className="p-3">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {camps.length === 0 ? (
+      <div className="overflow-x-auto shadow rounded-md bg-gray-50 border border-gray-200">
+        {loading ? (
+          <p className="p-6 text-center text-gray-700">Loading camps...</p>
+        ) : camps.length === 0 ? (
+          <p className="p-6 text-center text-gray-700">No camps found.</p>
+        ) : (
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-100 text-gray-900">
               <tr>
-                <td colSpan="5" className="p-4 text-center">
-                  No camps found.
-                </td>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Name</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Date & Time</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Location</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">Healthcare Pro</th>
+                <th className="px-4 py-3 text-sm font-semibold text-center">Actions</th>
               </tr>
-            ) : (
-              camps.map((camp) => (
-                <tr key={camp._id} className="border-t hover:bg-gray-50">
-                  <td className="p-3">{camp.campName}</td>
-                  <td className="p-3">{camp.dateTime}</td>
-                  <td className="p-3">{camp.location}</td>
-                  <td className="p-3">{camp.healthcareProfessional}</td>
-                  <td className="p-3">
-                    <button
-                      onClick={() => navigate(`/update-camp/${camp._id}`)}
-                      className="bg-blue-500 text-white px-3 py-1 rounded mr-2"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => {
-                        setSelectedCamp(camp);
-                        setShowModal(true);
-                      }}
-                      className="bg-red-500 text-white px-3 py-1 rounded"
-                    >
-                      Delete
-                    </button>
+            </thead>
+            <tbody className="divide-y divide-gray-200 text-gray-800">
+              {camps.map((camp) => (
+                <tr key={camp._id} className="hover:bg-gray-100">
+                  <td className="px-4 py-3">{camp.campName}</td>
+                  <td className="px-4 py-3">{camp.dateTime}</td>
+                  <td className="px-4 py-3">{camp.location}</td>
+                  <td className="px-4 py-3">{camp.healthcareProfessional}</td>
+                  <td className="px-4 py-3 text-center">
+                    <div className="flex justify-center gap-3">
+                      <button
+                        onClick={() => navigate(`/update-camp/${camp._id}`)}
+                        className="flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded transition text-sm"
+                      >
+                        <Pencil size={16} /> Edit
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedCamp(camp);
+                          setShowModal(true);
+                        }}
+                        className="flex items-center gap-1 px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition text-sm"
+                      >
+                        <Trash2 size={16} /> Delete
+                      </button>
+                    </div>
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex gap-2 mt-4">
+        <div className="flex justify-center mt-6 gap-2 flex-wrap">
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i}
-              className={`px-3 py-1 rounded border ${
-                page === i + 1 ? "bg-blue-500 text-white" : ""
-              }`}
               onClick={() => setPage(i + 1)}
+              className={`px-4 py-1 rounded-md border ${
+                page === i + 1
+                  ? "bg-blue-600 text-white"
+                  : "hover:bg-gray-200 text-gray-800"
+              } transition`}
             >
               {i + 1}
             </button>
@@ -138,29 +154,29 @@ export default function ManageCamps() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Modal */}
       <Dialog open={showModal} onClose={() => setShowModal(false)}>
-        <div className="fixed inset-0 bg-black/30 flex items-center justify-center z-50">
-          <Dialog.Panel className="bg-white p-6 rounded shadow max-w-sm w-full">
-            <Dialog.Title className="text-lg font-bold mb-4">
-              Confirm Delete
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+          <Dialog.Panel className="bg-white p-6 rounded-lg max-w-sm w-full shadow-xl text-gray-900">
+            <Dialog.Title className="text-lg font-semibold text-red-600">
+              ⚠️ Confirm Delete
             </Dialog.Title>
-            <p className="mb-4">
+            <p className="text-sm mt-2 mb-6">
               Are you sure you want to delete{" "}
               <strong>{selectedCamp?.campName}</strong>?
             </p>
-            <div className="flex justify-end gap-4">
+            <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowModal(false)}
-                className="px-4 py-2 rounded bg-gray-200"
+                className="px-4 py-2 rounded-md border text-gray-800 hover:bg-gray-100"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 rounded bg-red-600 text-white"
+                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
               >
-                Delete
+                Yes, Delete
               </button>
             </div>
           </Dialog.Panel>
@@ -169,4 +185,5 @@ export default function ManageCamps() {
     </div>
   );
 }
+
 
