@@ -15,21 +15,22 @@ const OrganizerProfile = () => {
   const { register, handleSubmit, reset, watch } = useForm();
 
   // Fetch real data on mount
-  useEffect(() => {
-    if (!user?.email) return;
-    axiosSecure
-      .get(`/organizers/${user.email}`)
-      .then((res) => {
-        const data = res.data;
-        setOrganizerId(data._id); // needed for update
-        setProfileImage(data.image); // show profile pic
-        reset(data); // populate form fields
-      })
-      .catch((err) => {
-        console.error("Failed to fetch profile:", err);
-        toast.error("Failed to load profile info");
-      });
-  }, [user, reset]);
+useEffect(() => {
+  if (!user?.email) return;
+  const encodedEmail = encodeURIComponent(user.email);
+  axiosSecure
+    .get(`/organizers/${encodedEmail}`)
+    .then((res) => {
+      const data = res.data;
+      setOrganizerId(data._id); // needed for update
+      setProfileImage(data.image); // show profile pic
+      reset(data); // populate form fields
+    })
+    .catch((err) => {
+      console.error("Failed to fetch profile:", err);
+      toast.error("Failed to load profile info");
+    });
+}, [user, reset]);
 
   // Live image preview update
   const imageWatch = watch("image");

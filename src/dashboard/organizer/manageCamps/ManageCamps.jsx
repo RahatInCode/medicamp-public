@@ -18,10 +18,23 @@ export default function ManageCamps() {
   const [limit] = useState(5);
 
   const [selectedCamp, setSelectedCamp] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [updateLoading, setUpdateLoading] = useState(false);
+
+  // For update form controlled inputs:
+  const [formData, setFormData] = useState({
+    campName: "",
+    campFees: "",
+    dateTime: "",
+    location: "",
+    healthcareProfessional: "",
+    description: "",
+    image: "",
+  });
 
   useEffect(() => {
     if (!user?.email) return;
@@ -34,7 +47,6 @@ export default function ManageCamps() {
           params: { organizerEmail: user.email, search, sortBy, page, limit },
         })
         .then((res) => {
-          // Expecting { camps: [...], total: number }
           setCamps(res.data.camps || res.data);
           setTotal(res.data.total || res.data.length || 0);
         })
@@ -50,10 +62,10 @@ export default function ManageCamps() {
 
   const totalPages = Math.ceil(total / limit);
 
-  // Open modal and select camp to delete
+  // Delete modal
   const confirmDelete = (camp) => {
     setSelectedCamp(camp);
-    setShowModal(true);
+    setShowDeleteModal(true);
   };
 
   const handleDelete = async () => {
@@ -63,12 +75,78 @@ export default function ManageCamps() {
       await axiosSecure.delete(`/camps/delete-camp/${selectedCamp._id}`);
       toast.success("Camp deleted!");
       setCamps((prev) => prev.filter((c) => c._id !== selectedCamp._id));
-      setShowModal(false);
+      setShowDeleteModal(false);
       setSelectedCamp(null);
     } catch (err) {
       toast.error("Delete failed: " + err.message);
     } finally {
       setDeleteLoading(false);
+    }
+  };
+
+  // Update modal: open and prefill form
+  const openUpdateModal = (camp) => {
+    setSelectedCamp(camp);
+    setFormData({
+      campName: camp.campName || "",
+      campFees: camp.campFees || "",
+      dateTime: camp.dateTime || "",
+      location: camp.location || "",
+      healthcareProfessional: camp.healthcareProfessional || "",
+      description: camp.description || "",
+      image: camp.image || "",
+    });
+    setShowUpdateModal(true);
+  };
+
+  // Handle form input changes
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Submit update form
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedCamp) return;
+
+    setUpdateLoading(true);
+    try {
+      const { campName, campFees, dateTime, location, healthcareProfessional, description, image } = formData;
+
+      // Validation simple example (you can add more)
+      if (!campName || !campFees || !dateTime || !location || !healthcareProfessional || !description || !image) {
+        toast.error("All fields are required");
+        setUpdateLoading(false);
+        return;
+      }
+
+      const updatedData = {
+        campName,
+        campFees,
+        dateTime,
+        location,
+        healthcareProfessional,
+        description,
+        image,
+      };
+
+      const res = await axiosSecure.put(`/camps/update-camp/${selectedCamp._id}`, updatedData);
+
+      toast.success("Camp updated successfully!");
+
+      // Update local state with new camp data without refetch
+      setCamps((prev) =>
+        prev.map((camp) => (camp._id === selectedCamp._id ? res.data.updated : camp))
+      );
+
+      setShowUpdateModal(false);
+      setSelectedCamp(null);
+    } catch (err) {
+      toast.error("Update failed: " + err.message);
+      console.error("Update error:", err);
+    } finally {
+      setUpdateLoading(false);
     }
   };
 
@@ -137,7 +215,7 @@ export default function ManageCamps() {
                   <td className="px-4 py-3 text-center">
                     <div className="flex justify-center gap-3">
                       <button
-                        onClick={() => navigate(`/update-camp/${camp._id}`)}
+                        onClick={() => openUpdateModal(camp)}
                         className="flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded transition text-sm"
                       >
                         <Pencil size={16} /> Edit
@@ -177,7 +255,7 @@ export default function ManageCamps() {
       )}
 
       {/* Delete Modal */}
-      <Dialog open={showModal} onClose={() => setShowModal(false)}>
+      <Dialog open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
           <Dialog.Panel className="bg-white p-6 rounded-lg max-w-sm w-full shadow-xl text-gray-900">
             <Dialog.Title className="text-lg font-semibold text-red-600">
@@ -189,7 +267,7 @@ export default function ManageCamps() {
             </p>
             <div className="flex justify-end gap-3">
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => setShowDeleteModal(false)}
                 className="px-4 py-2 rounded-md border text-gray-800 hover:bg-gray-100"
               >
                 Cancel
@@ -206,6 +284,94 @@ export default function ManageCamps() {
                 {deleteLoading ? "Deleting..." : "Yes, Delete"}
               </button>
             </div>
+          </Dialog.Panel>
+        </div>
+      </Dialog>
+
+      {/* Update Modal */}
+      <Dialog open={showUpdateModal} onClose={() => setShowUpdateModal(false)}>
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+          <Dialog.Panel className="bg-white p-6 rounded-lg max-w-lg w-full shadow-xl text-gray-900">
+            <Dialog.Title className="text-xl font-semibold mb-4">
+              ✏️ Update Camp
+            </Dialog.Title>
+            <form onSubmit={handleUpdateSubmit} className="space-y-4">
+              <input
+                name="campName"
+                value={formData.campName}
+                onChange={handleInputChange}
+                placeholder="Camp Name"
+                className="w-full p-2 border rounded-md"
+                required
+              />
+              <input
+                name="campFees"
+                value={formData.campFees}
+                onChange={handleInputChange}
+                type="number"
+                placeholder="Camp Fees"
+                className="w-full p-2 border rounded-md"
+                required
+              />
+              <input
+                name="dateTime"
+                value={formData.dateTime}
+                onChange={handleInputChange}
+                type="datetime-local"
+                placeholder="Date & Time"
+                className="w-full p-2 border rounded-md"
+                required
+              />
+              <input
+                name="location"
+                value={formData.location}
+                onChange={handleInputChange}
+                placeholder="Location"
+                className="w-full p-2 border rounded-md"
+                required
+              />
+              <input
+                name="healthcareProfessional"
+                value={formData.healthcareProfessional}
+                onChange={handleInputChange}
+                placeholder="Healthcare Professional"
+                className="w-full p-2 border rounded-md"
+                required
+              />
+              <input
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                placeholder="Description"
+                className="w-full p-2 border rounded-md"
+                required
+              />
+              <input
+                name="image"
+                value={formData.image}
+                onChange={handleInputChange}
+                placeholder="Image URL"
+                className="w-full p-2 border rounded-md"
+                required
+              />
+              <div className="flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowUpdateModal(false)}
+                  className="px-4 py-2 border rounded-md hover:bg-gray-100"
+                  disabled={updateLoading}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={updateLoading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                >
+                  {updateLoading ? "Updating..." : "Update Camp"}
+                </button>
+              </div>
+            </form>
           </Dialog.Panel>
         </div>
       </Dialog>

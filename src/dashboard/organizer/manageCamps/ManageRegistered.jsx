@@ -17,9 +17,10 @@ export default function ManageRegistered() {
     data: registrations = [],
     isLoading,
     isError,
-    
-  } = useQuery(["registrations", user?.email], fetchRegistrations, {
-    enabled: !!user?.email, // only run when user.email exists
+  } = useQuery({
+    queryKey: ["registrations", user?.email],
+    queryFn: fetchRegistrations,
+    enabled: !!user?.email,
     onError: (err) => {
       toast.error("Failed to fetch registrations");
       console.error("Error fetching registrations:", err);
@@ -67,5 +68,6 @@ export default function ManageRegistered() {
     </div>
   );
 }
+
 
 
