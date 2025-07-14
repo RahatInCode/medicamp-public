@@ -9,26 +9,32 @@ import { Pencil, Trash2 } from "lucide-react";
 export default function ManageCamps() {
   const navigate = useNavigate();
   const { user, loading: authLoading } = useContext(AuthContext);
+
   const [camps, setCamps] = useState([]);
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("createdAt");
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
+
   const [selectedCamp, setSelectedCamp] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
   const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     if (!user?.email) return;
 
     setLoading(true);
+
     const delayDebounce = setTimeout(() => {
       axiosSecure
-        .get(`/participantRegistrations/organizer/${user.email}`, {
-          params: { search, sortBy, page, limit },
+        .get("/camps", {
+          params: { organizerEmail: user.email, search, sortBy, page, limit },
         })
         .then((res) => {
+          // Expecting { camps: [...], total: number }
           setCamps(res.data.camps || res.data);
           setTotal(res.data.total || res.data.length || 0);
         })
@@ -44,19 +50,32 @@ export default function ManageCamps() {
 
   const totalPages = Math.ceil(total / limit);
 
-  const handleDelete = () => {
-    axiosSecure
-      .delete(`/camps/delete-camp/${selectedCamp?._id}`)
-      .then(() => {
-        toast.success("Camp deleted!");
-        setCamps((prev) => prev.filter((c) => c._id !== selectedCamp._id));
-        setShowModal(false);
-      })
-      .catch(() => toast.error("Delete failed"));
+  // Open modal and select camp to delete
+  const confirmDelete = (camp) => {
+    setSelectedCamp(camp);
+    setShowModal(true);
   };
 
-  if (authLoading) return <p className="p-6 text-gray-800">Loading user info...</p>;
-  if (!user?.email) return <p className="p-6 text-gray-800">Please login to manage camps.</p>;
+  const handleDelete = async () => {
+    if (!selectedCamp) return;
+    setDeleteLoading(true);
+    try {
+      await axiosSecure.delete(`/camps/delete-camp/${selectedCamp._id}`);
+      toast.success("Camp deleted!");
+      setCamps((prev) => prev.filter((c) => c._id !== selectedCamp._id));
+      setShowModal(false);
+      setSelectedCamp(null);
+    } catch (err) {
+      toast.error("Delete failed: " + err.message);
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
+  if (authLoading)
+    return <p className="p-6 text-gray-800">Loading user info...</p>;
+  if (!user?.email)
+    return <p className="p-6 text-gray-800">Please login to manage camps.</p>;
 
   return (
     <div className="p-6 max-w-7xl mx-auto bg-white min-h-screen text-gray-900">
@@ -96,10 +115,16 @@ export default function ManageCamps() {
             <thead className="bg-gray-100 text-gray-900">
               <tr>
                 <th className="px-4 py-3 text-left text-sm font-semibold">Name</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Date & Time</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">
+                  Date & Time
+                </th>
                 <th className="px-4 py-3 text-left text-sm font-semibold">Location</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Healthcare Pro</th>
-                <th className="px-4 py-3 text-sm font-semibold text-center">Actions</th>
+                <th className="px-4 py-3 text-left text-sm font-semibold">
+                  Healthcare Pro
+                </th>
+                <th className="px-4 py-3 text-sm font-semibold text-center">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 text-gray-800">
@@ -118,10 +143,7 @@ export default function ManageCamps() {
                         <Pencil size={16} /> Edit
                       </button>
                       <button
-                        onClick={() => {
-                          setSelectedCamp(camp);
-                          setShowModal(true);
-                        }}
+                        onClick={() => confirmDelete(camp)}
                         className="flex items-center gap-1 px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition text-sm"
                       >
                         <Trash2 size={16} /> Delete
@@ -174,9 +196,14 @@ export default function ManageCamps() {
               </button>
               <button
                 onClick={handleDelete}
-                className="px-4 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 transition"
+                disabled={deleteLoading}
+                className={`px-4 py-2 rounded-md text-white ${
+                  deleteLoading
+                    ? "bg-red-400 cursor-not-allowed"
+                    : "bg-red-600 hover:bg-red-700"
+                } transition`}
               >
-                Yes, Delete
+                {deleteLoading ? "Deleting..." : "Yes, Delete"}
               </button>
             </div>
           </Dialog.Panel>
@@ -185,5 +212,6 @@ export default function ManageCamps() {
     </div>
   );
 }
+
 
 

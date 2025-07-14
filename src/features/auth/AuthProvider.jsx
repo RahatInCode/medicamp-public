@@ -8,32 +8,40 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+ useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
     setLoading(true);
-    setUser(currentUser);
+
     if (currentUser) {
-      const idToken = await currentUser.getIdToken();
-      localStorage.setItem("token", idToken); 
-      setToken(idToken);
+      const token = await currentUser.getIdToken(); // 🧠 just fetch, no refresh yet
 
+      // Hit your backend to sync and trigger custom claim
       await fetch("http://localhost:3000/users", {
-  method: "PUT",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${idToken}`,
-  },
-  body: JSON.stringify({
-    name: currentUser.displayName,
-    email: currentUser.email,
-    role: currentUser.email === "organizer@medicamp.com" ? "organizer" : "participant",
-  }),
-});
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: currentUser.displayName,
+          email: currentUser.email,
+        }),
+      });
 
+      // 🔁 Wait a few seconds for Firebase to update the claim (important!)
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+
+      // 🔥 Now force refresh the token
+      const updatedToken = await currentUser.getIdToken(true);
+      localStorage.setItem("token", updatedToken);
+      setToken(updatedToken);
+      setUser(currentUser);
     } else {
-      localStorage.removeItem("token"); 
+      localStorage.removeItem("token");
       setToken(null);
+      setUser(null);
     }
+
     setLoading(false);
   });
 
@@ -49,5 +57,7 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+
+
 
 
