@@ -67,7 +67,7 @@ const NavbarClient = () => {
 
           {!user ? (
             <Link
-              to="/register"
+              to="/auth"
               className="bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition"
             >
               Join Us

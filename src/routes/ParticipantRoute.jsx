@@ -10,6 +10,7 @@ import CampDetails from "../features/camps/CampDetails";
 import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../dashboard/participant/UserDashboard";
 import { OrganizerRoutes } from "./OrganizerRoute";
+import AuthForm from "../components/common/AuthForm";
 
 
 const ParticipantRoutes = createBrowserRouter([
@@ -38,6 +39,10 @@ const ParticipantRoutes = createBrowserRouter([
       {
         path: "join-us",
         element: <SignIn />,
+      },
+      {
+      path:"/auth",
+      element:<AuthForm></AuthForm>
       },
       {
         path:"UserDashboard",
