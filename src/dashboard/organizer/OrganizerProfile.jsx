@@ -1,54 +1,52 @@
-import { useEffect, useState, useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import { Edit2, Mail, UserCircle, Image } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../features/auth/AuthContext";
-import axiosSecure from "../../api/axiosSecure";
+import { updateProfile } from "firebase/auth";
 import toast from "react-hot-toast";
+import { auth } from "../../firebase/firebase.config";
 
 const OrganizerProfile = () => {
+  const { user } = useContext(AuthContext); // Firebase user
   const [isEditing, setIsEditing] = useState(false);
-  const [profileImage, setProfileImage] = useState(""); // For live image preview
-  const { user } = useContext(AuthContext);
-  const [organizerId, setOrganizerId] = useState(null);
-
+  const [profileImage, setProfileImage] = useState(user?.photoURL || "");
   const { register, handleSubmit, reset, watch } = useForm();
 
-  // Fetch real data on mount
-useEffect(() => {
-  if (!user?.email) return;
-  const encodedEmail = encodeURIComponent(user.email);
-  axiosSecure
-    .get(`/organizers/${encodedEmail}`)
-    .then((res) => {
-      const data = res.data;
-      setOrganizerId(data._id); // needed for update
-      setProfileImage(data.image); // show profile pic
-      reset(data); // populate form fields
-    })
-    .catch((err) => {
-      console.error("Failed to fetch profile:", err);
-      toast.error("Failed to load profile info");
-    });
-}, [user, reset]);
+  // Reset form with Firebase user data
+  useEffect(() => {
+    if (user) {
+      reset({
+        name: user.displayName || "",
+        email: user.email || "",
+        image: user.photoURL || "",
+      });
+      setProfileImage(user.photoURL || "");
+    }
+  }, [user, reset]);
 
-  // Live image preview update
+  // Live image preview
   const imageWatch = watch("image");
-
   useEffect(() => {
     if (imageWatch) setProfileImage(imageWatch);
   }, [imageWatch]);
 
   const onSubmit = async (data) => {
     try {
-      await axiosSecure.put(`/organizers/${organizerId}`, data);
+      await updateProfile(auth.currentUser, {
+        displayName: data.name,
+        photoURL: data.image,
+      });
+
       toast.success("Profile updated!");
       setIsEditing(false);
     } catch (err) {
-      console.error("Profile update failed:", err);
-      toast.error("Update failed. Try again.");
+      console.error("Update failed:", err);
+      toast.error("Update failed");
     }
   };
+
+  if (!user) return <p className="text-white">User not logged in.</p>;
 
   return (
     <motion.div
@@ -66,11 +64,11 @@ useEffect(() => {
           />
           <h2 className="text-xl font-semibold flex justify-center items-center gap-2">
             <UserCircle className="w-5 h-5" />
-            {watch("name") || "Loading..."}
+            {user.displayName || "No Name"}
           </h2>
           <p className="flex justify-center items-center gap-2 text-sm text-gray-200">
             <Mail className="w-4 h-4" />
-            {watch("email") || "Loading..."}
+            {user.email}
           </p>
           <button
             onClick={() => setIsEditing(true)}
@@ -104,6 +102,7 @@ useEffect(() => {
                 {...register("email")}
                 className="bg-transparent outline-none ml-2 w-full text-white"
                 type="email"
+                disabled
               />
             </div>
           </div>
@@ -138,7 +137,12 @@ useEffect(() => {
               type="button"
               onClick={() => {
                 setIsEditing(false);
-                reset(); // revert to last fetched data
+                reset({
+                  name: user.displayName || "",
+                  email: user.email || "",
+                  image: user.photoURL || "",
+                });
+                setProfileImage(user.photoURL || "");
               }}
               className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl w-full"
             >
@@ -152,3 +156,4 @@ useEffect(() => {
 };
 
 export default OrganizerProfile;
+
