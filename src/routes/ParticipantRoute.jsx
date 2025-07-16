@@ -11,9 +11,14 @@ import PrivateRoute from "./PrivateRoute";
 import UserDashboard from "../dashboard/participant/UserDashboard";
 import { OrganizerRoutes } from "./OrganizerRoute";
 import AuthForm from "../components/common/AuthForm";
+import UserAnalytics from "../dashboard/participant/UserAnalytics";
+import RegisteredCamps from "../dashboard/participant/RegisteredCamps";
+import FeedbackSection from "../Feedback/FeedbackSection";
+import Analytics from "../dashboard/participant/Analytics";
+import PaymentHistory from "../dashboard/participant/PaymentHistory";
 
 
-const ParticipantRoutes = createBrowserRouter([
+const ParticipantRoute = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
@@ -42,14 +47,48 @@ const ParticipantRoutes = createBrowserRouter([
       },
       {
       path:"/auth",
-      element:<AuthForm></AuthForm>
+      element:<PrivateRoute>
+        <AuthForm></AuthForm>
+      </PrivateRoute>
       },
       {
-        path:"UserDashboard",
-        element : <PrivateRoute>
-          <UserDashboard />
-        </PrivateRoute>
-      },
+  path: "userDashboard",
+  element: <PrivateRoute><UserDashboard /></PrivateRoute>,
+},
+{
+  path: "userDashboard/user-analytics",
+  element: <UserAnalytics />,
+},
+{
+  path: "userDashboard/analytics",
+  element: <Analytics />,
+},
+{
+  path: "userDashboard/feedback",
+  element: <FeedbackSection />,
+},
+{
+  path: "userDashboard/payment-history",
+  element: <PaymentHistory />,
+},
+{
+  path: "userDashboard/registered-camps",
+  element: <RegisteredCamps />,
+},
+// {
+//   path: "userDashboard/profile",
+//   element: <Profile />,
+// },
+
+      {
+  path: "/userDashboard/participant/registered-camps",
+  element: (
+    <PrivateRoute>
+      <RegisteredCamps />
+    </PrivateRoute>
+  ),
+},
+
       {
       path:"/organizer/*",
       element:<OrganizerRoutes></OrganizerRoutes>
@@ -62,4 +101,4 @@ const ParticipantRoutes = createBrowserRouter([
   },
 ]);
 
-export default ParticipantRoutes;
+export default ParticipantRoute;

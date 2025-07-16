@@ -1,110 +1,144 @@
-// ---- src/components/dashboard/RegisteredCamps.jsx ----
+import React, { useContext } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import axios from '../../api/axiosSecure';
+import Swal from 'sweetalert2';
+import { AuthContext } from "../../features/auth/AuthContext";// updated import path
+import { toast } from 'react-hot-toast';
 
-import React from 'react';
-import { Calendar, CheckCircle, XCircle, Clock, MessageSquare } from 'lucide-react';
+const RegisteredCamps = () => {
+  const { user } = useContext(AuthContext) 
 
-const RegisteredCamps = ({ registeredCamps, onPay, onCancel, onFeedback }) => {
+  const {
+    data: registeredCamps = [],
+    refetch,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ['registered-camps', user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axios.get(`/api/payments/registered-camps?email=${user.email}`);
+      return res.data;
+    }
+  });
+
+  const handleCancel = async (id) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This will cancel your registration!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, cancel it!',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`/registered-camps/${id}`);
+        toast.success("Registration cancelled successfully.");
+        refetch();
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to cancel.");
+      }
+    }
+  };
+
+  const handlePay = (camp) => {
+    console.log(camp);
+    toast("Payment logic will be added in Step 2 💳");
+  };
+
+  const openFeedbackModal = (camp) => {
+    console.log(camp);
+    toast("Feedback modal will be added in Step 3 ⭐");
+  };
+
+  if (isLoading) return <p className="text-center p-10">Loading camps...</p>;
+
+  if (isError) return (
+    <p className="text-center p-10 text-red-500">
+      Error loading camps: {error.message}
+    </p>
+  );
+
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-gray-800">Registered Camps</h1>
-        <div className="flex items-center space-x-2 text-sm text-gray-600">
-          <Calendar className="w-4 h-4" />
-          <span>{registeredCamps.length} camps registered</span>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+    <div className="p-4">
+      <h2 className="text-xl font-bold mb-4">Your Registered Camps</h2>
+      <div className="overflow-x-auto">
+        <table className="table table-zebra w-full text-sm">
+          <thead>
+            <tr>
+              <th>Camp Name</th>
+              <th>Fees</th>
+              <th>Payment</th>
+              <th>Confirmation</th>
+              <th>Cancel</th>
+              <th>Feedback</th>
+            </tr>
+          </thead>
+          <tbody>
+            {registeredCamps.length === 0 ? (
               <tr>
-                <th className="px-6 py-4 text-left">Camp Name</th>
-                <th className="px-6 py-4 text-left">Fees</th>
-                <th className="px-6 py-4 text-left">Payment Status</th>
-                <th className="px-6 py-4 text-left">Confirmation</th>
-                <th className="px-6 py-4 text-left">Actions</th>
+                <td colSpan="6" className="text-center text-gray-500 py-5">
+                  You haven’t registered for any camps yet.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {registeredCamps.map((camp, index) => (
-                <tr key={camp.id} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                  <td className="px-6 py-4">
-                    <div>
-                      <p className="font-medium text-gray-800">{camp.name}</p>
-                      <p className="text-sm text-gray-600">Date: {camp.campDate}</p>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="font-semibold text-green-600">${camp.fees}</p>
-                  </td>
-                  <td className="px-6 py-4">
-                    {camp.paymentStatus === 'paid' ? (
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-green-100 text-green-800">
-                        <CheckCircle className="w-4 h-4 mr-1" />
-                        Paid
-                      </span>
+            ) : (
+              registeredCamps.map(({ _id, campName, campFees, paymentStatus, confirmationStatus, feedbackGiven }) => (
+                <tr key={_id}>
+                  <td>{campName}</td>
+                  <td>{campFees}৳</td>
+                  <td>
+                    {paymentStatus === 'Paid' ? (
+                      <span className="text-green-600 font-semibold">Paid</span>
                     ) : (
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800">
-                        <XCircle className="w-4 h-4 mr-1" />
-                        Unpaid
-                      </span>
+                      <button
+                        onClick={() => handlePay({ _id, campName, campFees })}
+                        className="btn btn-xs btn-primary"
+                      >
+                        Pay
+                      </button>
                     )}
                   </td>
-                  <td className="px-6 py-4">
-                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm ${
-                      camp.confirmationStatus === 'confirmed'
-                        ? 'bg-blue-100 text-blue-800'
-                        : 'bg-yellow-100 text-yellow-800'
-                    }`}>
-                      {camp.confirmationStatus === 'confirmed' ? (
-                        <CheckCircle className="w-4 h-4 mr-1" />
-                      ) : (
-                        <Clock className="w-4 h-4 mr-1" />
-                      )}
-                      {camp.confirmationStatus}
+                  <td>
+                    <span className="badge badge-outline">
+                      {confirmationStatus}
                     </span>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="flex space-x-2">
-                      {camp.paymentStatus === 'unpaid' && (
-                        <button
-                          onClick={() => onPay(camp.id)}
-                          className="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600 transition-colors"
-                        >
-                          Pay Now
-                        </button>
-                      )}
-                      {camp.paymentStatus === 'paid' && (
-                        <button
-                          onClick={() => onFeedback(camp)}
-                          className="bg-purple-500 text-white px-3 py-1 rounded text-sm hover:bg-purple-600 transition-colors flex items-center space-x-1"
-                        >
-                          <MessageSquare className="w-3 h-3" />
-                          <span>Feedback</span>
-                        </button>
-                      )}
+                  <td>
+                    {paymentStatus === 'Paid' ? (
+                      <button className="btn btn-xs btn-disabled">Cancel</button>
+                    ) : (
                       <button
-                        onClick={() => onCancel(camp.id)}
-                        disabled={camp.paymentStatus === 'paid'}
-                        className={`px-3 py-1 rounded text-sm transition-colors ${
-                          camp.paymentStatus === 'paid'
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : 'bg-red-500 text-white hover:bg-red-600'
-                        }`}
+                        onClick={() => handleCancel(_id)}
+                        className="btn btn-xs btn-error"
                       >
                         Cancel
                       </button>
-                    </div>
+                    )}
+                  </td>
+                  <td>
+                    {paymentStatus === 'Paid' && !feedbackGiven ? (
+                      <button
+                        onClick={() => openFeedbackModal({ _id, campName })}
+                        className="btn btn-xs btn-outline"
+                      >
+                        Feedback
+                      </button>
+                    ) : (
+                      <span className="text-gray-400">—</span>
+                    )}
                   </td>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 };
 
 export default RegisteredCamps;
+
