@@ -8,34 +8,33 @@ const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
+useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
     setLoading(true);
 
     if (currentUser) {
-      const token = await currentUser.getIdToken(); // 🧠 just fetch, no refresh yet
+      try {
+        // Step 1️⃣: Save user first — no auth needed
+        await fetch("http://localhost:3000/users/public", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: currentUser.displayName,
+            email: currentUser.email,
+          }),
+        });
 
-      // Hit your backend to sync and trigger custom claim
-      await fetch("http://localhost:3000/users", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          name: currentUser.displayName,
-          email: currentUser.email,
-        }),
-      });
+        // Step 2️⃣: Get fresh token
+        const token = await currentUser.getIdToken(true);
 
-      // 🔁 Wait a few seconds for Firebase to update the claim (important!)
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // 🔥 Now force refresh the token
-      const updatedToken = await currentUser.getIdToken(true);
-      localStorage.setItem("token", updatedToken);
-      setToken(updatedToken);
-      setUser(currentUser);
+        localStorage.setItem("token", token);
+        setToken(token);
+        setUser(currentUser);
+      } catch (err) {
+        console.error("Auth error:", err.message);
+      }
     } else {
       localStorage.removeItem("token");
       setToken(null);
@@ -57,6 +56,8 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+
+
 
 
 

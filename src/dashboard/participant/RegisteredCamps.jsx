@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import axios from '../../api/axiosSecure';
+import axiosSecure from '../../api/axiosSecure';
 import Swal from 'sweetalert2';
-import { AuthContext } from "../../features/auth/AuthContext";// updated import path
+import { AuthContext } from "../../features/auth/AuthContext";
+import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-hot-toast';
 
+const stripePromise = loadStripe('pk_test_51RlMgIHHrlnP3yveglcBg4lDlDZgIHRyDLNRlj28UKPx7ua2jLGjvgvVkKNzAjYzJGw6xSA7zXjXwQi8Ng1T7bZ100ZNdVeqkA');
+
 const RegisteredCamps = () => {
-  const { user } = useContext(AuthContext) 
+  const { user } = useContext(AuthContext);
 
   const {
     data: registeredCamps = [],
@@ -18,7 +21,7 @@ const RegisteredCamps = () => {
     queryKey: ['registered-camps', user?.email],
     enabled: !!user?.email,
     queryFn: async () => {
-      const res = await axios.get(`/api/payments/registered-camps?email=${user.email}`);
+      const res = await axiosSecure.get(`/participantRegistrations/user?email=${user.email}`);
       return res.data;
     }
   });
@@ -34,7 +37,7 @@ const RegisteredCamps = () => {
 
     if (result.isConfirmed) {
       try {
-        await axios.delete(`/registered-camps/${id}`);
+        await axiosSecure.delete(`/participantRegistrations/${id}`);
         toast.success("Registration cancelled successfully.");
         refetch();
       } catch (error) {
@@ -44,12 +47,32 @@ const RegisteredCamps = () => {
     }
   };
 
-  const handlePay = (camp) => {
-    console.log(camp);
-    toast("Payment logic will be added in Step 2 💳");
+  const handlePay = async (camp) => {
+    try {
+      const stripe = await stripePromise;
+      const response = await axiosSecure.post('/api/payments/create-checkout-session', {
+        campId: camp._id
+      });
+
+      const session = response.data;
+      if (!stripe || !session?.id) {
+        toast.error("Stripe session failed.");
+        return;
+      }
+
+      const result = await stripe.redirectToCheckout({ sessionId: session.id });
+
+      if (result.error) {
+        console.error(result.error.message);
+        toast.error("Stripe redirection failed.");
+      }
+    } catch (err) {
+      console.error('Payment initiation failed:', err.message);
+      toast.error('Payment failed!');
+    }
   };
 
-  const openFeedbackModal = (camp) => {
+  const FeedbackModal = (camp) => {
     console.log(camp);
     toast("Feedback modal will be added in Step 3 ⭐");
   };
@@ -85,16 +108,16 @@ const RegisteredCamps = () => {
                 </td>
               </tr>
             ) : (
-              registeredCamps.map(({ _id, campName, campFees, paymentStatus, confirmationStatus, feedbackGiven }) => (
-                <tr key={_id}>
-                  <td>{campName}</td>
-                  <td>{campFees}৳</td>
+              registeredCamps.map((camp) => (
+                <tr key={camp._id}>
+                  <td>{camp.campName || 'Unknown'}</td>
+                  <td>{camp.campFees || 0}৳</td>
                   <td>
-                    {paymentStatus === 'Paid' ? (
+                    {camp.paymentStatus === 'Paid' ? (
                       <span className="text-green-600 font-semibold">Paid</span>
                     ) : (
                       <button
-                        onClick={() => handlePay({ _id, campName, campFees })}
+                        onClick={() => handlePay(camp)}
                         className="btn btn-xs btn-primary"
                       >
                         Pay
@@ -103,15 +126,15 @@ const RegisteredCamps = () => {
                   </td>
                   <td>
                     <span className="badge badge-outline">
-                      {confirmationStatus}
+                      {camp.confirmationStatus || 'Pending'}
                     </span>
                   </td>
                   <td>
-                    {paymentStatus === 'Paid' ? (
+                    {camp.paymentStatus === 'Paid' ? (
                       <button className="btn btn-xs btn-disabled">Cancel</button>
                     ) : (
                       <button
-                        onClick={() => handleCancel(_id)}
+                        onClick={() => handleCancel(camp._id)}
                         className="btn btn-xs btn-error"
                       >
                         Cancel
@@ -119,9 +142,9 @@ const RegisteredCamps = () => {
                     )}
                   </td>
                   <td>
-                    {paymentStatus === 'Paid' && !feedbackGiven ? (
+                    {camp.paymentStatus === 'Paid' && !camp.feedbackGiven ? (
                       <button
-                        onClick={() => openFeedbackModal({ _id, campName })}
+                        onClick={() => FeedbackModal(camp)}
                         className="btn btn-xs btn-outline"
                       >
                         Feedback
@@ -141,4 +164,6 @@ const RegisteredCamps = () => {
 };
 
 export default RegisteredCamps;
+
+
 
