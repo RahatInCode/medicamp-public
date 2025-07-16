@@ -3,10 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import axiosSecure from '../../api/axiosSecure';
 import Swal from 'sweetalert2';
 import { AuthContext } from "../../features/auth/AuthContext";
-import { loadStripe } from '@stripe/stripe-js';
+
 import { toast } from 'react-hot-toast';
 
-const stripePromise = loadStripe('pk_test_51RlMgIHHrlnP3yveglcBg4lDlDZgIHRyDLNRlj28UKPx7ua2jLGjvgvVkKNzAjYzJGw6xSA7zXjXwQi8Ng1T7bZ100ZNdVeqkA');
+// const stripePromise = loadStripe('pk_test_51RlMgIHHrlnP3yveglcBg4lDlDZgIHRyDLNRlj28UKPx7ua2jLGjvgvVkKNzAjYzJGw6xSA7zXjXwQi8Ng1T7bZ100ZNdVeqkA');
 
 const RegisteredCamps = () => {
   const { user } = useContext(AuthContext);
@@ -47,30 +47,25 @@ const RegisteredCamps = () => {
     }
   };
 
-  const handlePay = async (camp) => {
-    try {
-      const stripe = await stripePromise;
-      const response = await axiosSecure.post('/api/payments/create-checkout-session', {
-        campId: camp._id
-      });
+const handlePay = async (camp) => {
+  try {
+    const response = await axiosSecure.post('/api/payment/create-checkout-session', { campId: camp._id });
 
-      const session = response.data;
-      if (!stripe || !session?.id) {
-        toast.error("Stripe session failed.");
-        return;
-      }
-
-      const result = await stripe.redirectToCheckout({ sessionId: session.id });
-
-      if (result.error) {
-        console.error(result.error.message);
-        toast.error("Stripe redirection failed.");
-      }
-    } catch (err) {
-      console.error('Payment initiation failed:', err.message);
-      toast.error('Payment failed!');
+    const session = response.data;
+    if (!session?.url) {
+      toast.error("Payment session URL not found");
+      return;
     }
-  };
+
+    // Redirect to Stripe hosted checkout page
+    window.location.href = session.url;
+  } catch (err) {
+    console.error('Payment initiation failed:', err.message);
+    toast.error('Payment failed!');
+  }
+};
+
+
 
   const FeedbackModal = (camp) => {
     console.log(camp);

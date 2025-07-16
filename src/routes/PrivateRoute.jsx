@@ -2,22 +2,30 @@ import { Navigate, useLocation } from 'react-router';
 import { useContext } from 'react';
 import { AuthContext } from '../features/auth/AuthContext';
 
+import { useQuery } from "@tanstack/react-query";
+import axios from "../api/axiosSecure";
+
 const PrivateRoute = ({ children, allowedRole }) => {
   const { user, loading } = useContext(AuthContext);
   const location = useLocation();
 
-  if (loading) return <span className="loading loading-spinner text-secondary"></span>;
+  const { data: userData = {}, isLoading: roleLoading } = useQuery({
+    queryKey: ["userRole", user?.email],
+    queryFn: async () => {
+      const res = await axios.get(`/users/${user.email}`);
+      return res.data;
+    },
+    enabled: !!user?.email,
+  });
 
-  // 🔐 Simple hardcoded role check (later you can fetch this from DB/backend)
-  const isOrganizer = user?.email === "medicamporganizer@gmail.com";
+  if (loading || roleLoading) return <span className="loading loading-spinner text-secondary"></span>;
 
-  // 🔒 Role mismatch? Block access
-  if (allowedRole === "organizer" && !isOrganizer) {
+  if (!user) return <Navigate to="/join-us" state={{ from: location }} replace />;
+
+  if (allowedRole && userData?.role !== allowedRole) {
     return <Navigate to="/" replace />;
   }
 
-  // 🔐 No user? Redirect to login
-  return user ? children : <Navigate to="/join-us" state={{ from: location }} replace />;
+  return children;
 };
-
-export default PrivateRoute;
+export default PrivateRoute

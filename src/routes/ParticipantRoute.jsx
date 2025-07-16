@@ -16,6 +16,7 @@ import RegisteredCamps from "../dashboard/participant/RegisteredCamps";
 import FeedbackSection from "../Feedback/FeedbackSection";
 import Analytics from "../dashboard/participant/Analytics";
 import PaymentHistory from "../dashboard/participant/PaymentHistory";
+import PaymentSuccess from "../pages/payment/PaymentSuccess";
 
 
 const ParticipantRoute = createBrowserRouter([
@@ -74,6 +75,10 @@ const ParticipantRoute = createBrowserRouter([
 {
   path: "userDashboard/registered-camps",
   element: <RegisteredCamps />,
+},
+{
+path:"/payment/success",
+element:<PaymentSuccess />
 },
 // {
 //   path: "userDashboard/profile",
