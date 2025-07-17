@@ -27,7 +27,7 @@ const AvailableCamps = () => {
   const { data: camps = [], isLoading, error } = useQuery({
     queryKey: ['available-camps'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:3000/camps');
+      const res = await axios.get('https://medicamp-server-five.vercel.app/camps');
       return res.data;
     },
   });

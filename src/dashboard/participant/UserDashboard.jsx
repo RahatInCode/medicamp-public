@@ -12,7 +12,7 @@ import {
 } from "lucide-react"; 
 
 const sidebarItems = [
-  { name: "Analytics", path: "analytics", icon: <BarChart3 size={20} /> },
+  
   { name: "User Analytics", path: "user-analytics", icon: <UserCircle size={20} /> },
   { name: "Feedback", path: "feedback", icon: <MessageSquare size={20} /> },
   { name: "Payment History", path: "payment-history", icon: <CreditCard size={20} /> },

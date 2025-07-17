@@ -17,6 +17,7 @@ import FeedbackSection from "../Feedback/FeedbackSection";
 import Analytics from "../dashboard/participant/Analytics";
 import PaymentHistory from "../dashboard/participant/PaymentHistory";
 import PaymentSuccess from "../pages/payment/PaymentSuccess";
+import Profile from "../dashboard/participant/Profile";
 
 
 const ParticipantRoute = createBrowserRouter([
@@ -69,10 +70,6 @@ const ParticipantRoute = createBrowserRouter([
   element: <FeedbackSection />,
 },
 {
-  path: "userDashboard/payment-history",
-  element: <PaymentHistory />,
-},
-{
   path: "userDashboard/registered-camps",
   element: <RegisteredCamps />,
 },
@@ -80,10 +77,16 @@ const ParticipantRoute = createBrowserRouter([
 path:"/payment/success",
 element:<PaymentSuccess />
 },
-// {
-//   path: "userDashboard/profile",
-//   element: <Profile />,
-// },
+{
+  path:"/userDashboard/payment-history",
+  element:<PrivateRoute>
+    <PaymentHistory></PaymentHistory>
+  </PrivateRoute>
+},
+{
+  path: "userDashboard/profile",
+  element: <Profile />,
+},
 
       {
   path: "/userDashboard/participant/registered-camps",

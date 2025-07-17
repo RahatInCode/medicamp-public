@@ -32,7 +32,7 @@ const Register = () => {
         localStorage.setItem("token", token);
 
         // ✅ Immediately update MongoDB
-        await fetch("http://localhost:3000/users", {
+        await fetch("https://medicamp-server-five.vercel.app/users", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
@@ -64,7 +64,7 @@ const Register = () => {
         console.log("🔐 Google JWT Token:", token);
 
         // ✅ Update MongoDB immediately
-        await fetch("http://localhost:3000/users", {
+        await fetch("https://medicamp-server-five.vercel.app/users", {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",

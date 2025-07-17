@@ -14,7 +14,7 @@ const HomePage = () => {
   const { data: topCamps = [], isLoading } = useQuery({
     queryKey: ['topCamps'],
     queryFn: async () => {
-      const res = await axios.get('http://localhost:3000/camps/top');
+      const res = await axios.get('https://medicamp-server-five.vercel.app/camps/top');
       return res.data;
     },
   });

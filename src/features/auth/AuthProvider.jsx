@@ -15,7 +15,7 @@ useEffect(() => {
     if (currentUser) {
       try {
         // Step 1️⃣: Save user first — no auth needed
-        await fetch("http://localhost:3000/users/public", {
+        await fetch("https://medicamp-server-five.vercel.app/users/public", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
