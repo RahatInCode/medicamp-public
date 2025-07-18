@@ -7,6 +7,7 @@ import { updateProfile } from "firebase/auth";
 import toast from "react-hot-toast";
 import { auth } from "../../firebase/firebase.config";
 
+
 const OrganizerProfile = () => {
   const { user } = useContext(AuthContext); // Firebase user
   const [isEditing, setIsEditing] = useState(false);
@@ -153,7 +154,9 @@ const OrganizerProfile = () => {
       )}
     </motion.div>
   );
+  
 };
+
 
 export default OrganizerProfile;
 
