@@ -6,7 +6,7 @@
 
 ## 🚀 Live Demo
 
-🌐 [Live Site Link](https://your-live-site-url.com)  
+🌐 [Live Site Link](https://medicamp-1e9cc.web.app/)  
 🔐 Organizer Login:  
 - **Username**: organizer@medicamp.com  
 - **Password**: organizer123
