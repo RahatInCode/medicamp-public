@@ -1,7 +1,3 @@
-// NOTE: make sure these CSS imports exist ONCE globally (e.g., in main.jsx or App.jsx):
-// import "slick-carousel/slick/slick.css";
-// import "slick-carousel/slick/slick-theme.css";
-
 import { motion } from "framer-motion";
 import Slider from "react-slick";
 import emailjs from "emailjs-com";
@@ -10,24 +6,37 @@ import Swal from "sweetalert2";
 import toast, { Toaster } from "react-hot-toast";
 import { FaHeartbeat, FaSyringe, FaChild, FaBrain, FaAppleAlt, FaPills, FaStethoscope } from "react-icons/fa";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import doc1 from "../../assets/doctors/doc1.jpg";
+import doc2 from "../../assets/doctors/doc2.jpg";
+import doc3 from "../../assets/doctors/doc3.jpg";
+import doc4 from "../../assets/doctors/doc4.jpg";
+import doc5 from "../../assets/doctors/doc5.jpg";
+import doc6 from "../../assets/doctors/doc6.jpg";
+import docRight from "../../assets/doctors/doc-right.jpg";
+import heart from "../../assets/news/heart.jpg";
+import vaccine from "../../assets/news/vaccine.jpg";
+import diabetes from "../../assets/news/diabetes.jpg";
+
+
 
 // Doctor Data
 const doctors = [
-  { name: "Dr. Sarah Khan", specialty: "Cardiologist", img: "/src/assets/doctors/doc1.jpg" },
-  { name: "Dr. Ahmed Rahman", specialty: "Dermatologist", img: "/src/assets/doctors/doc2.jpg" },
-  { name: "Dr. Ayesha Noor", specialty: "Pediatrician", img: "/src/assets/doctors/doc3.jpg" },
-  { name: "Dr. Saraf Khan", specialty: "Pathologist", img: "/src/assets/doctors/doc4.jpg" },
-  { name: "Dr. Ahmed Rahat", specialty: "Psychiatrist", img: "/src/assets/doctors/doc5.jpg" },
-  { name: "Dr. Sneha Benzir", specialty: "Neurologist", img: "/src/assets/doctors/doc6.jpg" },
+  { name: "Dr. Sarah Khan", specialty: "Cardiologist", img: doc1 },
+  { name: "Dr. Ahmed Rahman", specialty: "Dermatologist", img: doc2 },
+  { name: "Dr. Ayesha Noor", specialty: "Pediatrician", img: doc3 },
+  { name: "Dr. Saraf Khan", specialty: "Pathologist", img: doc4 },
+  { name: "Dr. Ahmed Rahat", specialty: "Psychiatrist", img: doc5 },
+  { name: "Dr. Sneha Benzir", specialty: "Neurologist", img: doc6 },
   // Special tall image (no name/specialty)
-  { name: "", specialty: "", img: "/src/assets/doctors/doc-right.jpg" },
+  { name: "", specialty: "", img: docRight },
 ];
+
 
 // News Data
 const news = [
-  { title: "5 Tips to Improve Heart Health", img: "/src/assets/news/heart.jpg", icon: <FaHeartbeat className="text-red-500 text-xl" />, link: "#" },
-  { title: "New Vaccine Breakthrough", img: "/src/assets/news/vaccine.jpg", icon: <FaSyringe className="text-blue-500 text-xl" />, link: "#" },
-  { title: "How to Manage Diabetes", img: "/src/assets/news/diabetes.jpg", icon: <FaAppleAlt className="text-green-500 text-xl" />, link: "#" },
+  { title: "5 Tips to Improve Heart Health", img:heart, icon: <FaHeartbeat className="text-red-500 text-xl" />, link: "#" },
+  { title: "New Vaccine Breakthrough", img:vaccine, icon: <FaSyringe className="text-blue-500 text-xl" />, link: "#" },
+  { title: "How to Manage Diabetes", img:diabetes, icon: <FaAppleAlt className="text-green-500 text-xl" />, link: "#" },
   { title: "Understanding Child Nutrition", img: "https://images.unsplash.com/photo-1613679074451-9ddcc1103cc8?q=80&w=870&auto=format&fit=crop", icon: <FaChild className="text-pink-500 text-xl" />, link: "#" },
   { title: "Brain Health Secrets", img: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1031&auto=format&fit=crop", icon: <FaBrain className="text-purple-500 text-xl" />, link: "#" },
   { title: "New Pain Relief Drug Released", img: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?q=80&w=940&auto=format&fit=crop", icon: <FaPills className="text-orange-500 text-xl" />, link: "#" },
