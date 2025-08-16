@@ -5,6 +5,7 @@ import HealthTipsResources from './HealthTipsResources';
 import HomePage from "../../pages/HomePage"
 import HomeSections from './HomeSections';
 import { Toaster } from 'react-hot-toast';
+import ChatbotWidget from '../../ai/ChatBotWidget';
 
 const Home = () => {
     return (
@@ -15,6 +16,7 @@ const Home = () => {
             <HealthTipsResources />
             <HomeSections />
             <Toaster position="top-right" />
+            <ChatbotWidget />
         </div>
     );
 };
