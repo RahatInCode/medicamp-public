@@ -1,7 +1,8 @@
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Autoplay, Pagination } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/pagination'
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Link } from 'react-router'; // make sure you are using react-router-dom v6
 
 const slides = [
   {
@@ -25,7 +26,7 @@ const slides = [
     success: '700+ women screened',
     cured: 'Early detection saved 95+ lives',
   },
-]
+];
 
 export default function HeroSlider() {
   return (
@@ -43,13 +44,11 @@ export default function HeroSlider() {
               className="w-full h-full bg-cover bg-center relative flex items-center justify-center"
               style={{
                 backgroundImage: `url(${slide.image})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
               }}
             >
               {/* Overlay */}
               <div className="absolute inset-0 bg-black/60 z-10 backdrop-blur-sm" />
-              
+
               {/* Content */}
               <div className="z-20 text-center px-4 md:px-10 text-white max-w-3xl">
                 <h1 className="text-4xl md:text-6xl font-extrabold mb-4 leading-tight tracking-wide drop-shadow-md">
@@ -60,13 +59,24 @@ export default function HeroSlider() {
                 </p>
                 <p className="text-md md:text-lg mb-1 text-gray-300">{slide.success}</p>
                 <p className="text-md md:text-lg mb-6 text-gray-300">{slide.cured}</p>
-                <div className="flex justify-center gap-4">
-                  <button className="bg-white text-gray-800 font-semibold py-2 px-6 rounded-full hover:bg-gray-200 transition">
+                <div className="flex justify-center gap-4 flex-wrap">
+                  {/* Learn More Button - external link */}
+                  <a
+                    href="https://www.transparenthands.org/why-are-health-camps-important-in-rural-areas/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-white text-gray-800 font-semibold py-2 px-6 rounded-full hover:bg-gray-200 transition"
+                  >
                     Learn More
-                  </button>
-                  <button className="bg-black text-white font-semibold py-2 px-6 rounded-full  transition">
+                  </a>
+
+                  {/* Join Our Next Camp - internal route */}
+                  <Link
+                    to="/camps"
+                    className="bg-black text-white font-semibold py-2 px-6 rounded-full hover:bg-gray-800 transition"
+                  >
                     Join Our Next Camp
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -74,5 +84,5 @@ export default function HeroSlider() {
         ))}
       </Swiper>
     </div>
-  )
+  );
 }
