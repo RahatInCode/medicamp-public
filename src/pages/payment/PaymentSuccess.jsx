@@ -72,32 +72,41 @@ const PaymentSuccess = () => {
     confirmPayment();
   }, [sessionId, campId, user, navigate]);
 
-  if (loading) return <p className="text-center mt-10">🔄 Confirming payment...</p>;
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-base-content/70 text-lg">🔄 Confirming payment...</p>
+      </div>
+    );
 
   return (
-    <div className="text-center mt-10">
-      <h2 className="text-2xl font-bold text-green-600">🎉 Payment Successful!</h2>
-      <p className="mt-4">Your camp registration has been confirmed.</p>
+    <div className="min-h-screen flex flex-col items-center justify-center px-4">
+      <h2 className="text-3xl font-bold text-success mb-4">🎉 Payment Successful!</h2>
+      <p className="text-base-content/70 text-lg mb-6">
+        Your camp registration has been confirmed.
+      </p>
 
-      {!hasGivenFeedback && (
+      <div className="flex flex-col sm:flex-row gap-4">
+        {!hasGivenFeedback && (
+          <button
+            onClick={() => setShowFeedbackModal(true)}
+            className="btn btn-primary"
+          >
+            Give Feedback
+          </button>
+        )}
+
         <button
-          onClick={() => setShowFeedbackModal(true)}
-          className="btn btn-primary mt-6"
+          onClick={() =>
+            navigate("/userDashboard/registered-camps", {
+              state: { refetch: true },
+            })
+          }
+          className="btn btn-secondary"
         >
-          Give Feedback
+          Go to Dashboard
         </button>
-      )}
-
-      <button
-        onClick={() =>
-          navigate("/userDashboard/registered-camps", {
-            state: { refetch: true }, // ✅ Pass refetch flag
-          })
-        }
-        className="btn btn-secondary mt-6 ml-4"
-      >
-        Go to Dashboard
-      </button>
+      </div>
 
       {showFeedbackModal && (
         <FeedbackModal campId={campId} onClose={() => setShowFeedbackModal(false)} />
@@ -107,6 +116,7 @@ const PaymentSuccess = () => {
 };
 
 export default PaymentSuccess;
+
 
 
 

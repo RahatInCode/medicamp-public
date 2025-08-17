@@ -7,7 +7,6 @@ import {
   Calendar,
   MapPin,
   Stethoscope,
-  Users,
   Info,
   List,
   LayoutGrid,
@@ -57,52 +56,52 @@ const AvailableCamps = () => {
     currentPage * itemsPerPage
   );
 
-  if (isLoading) 
+  if (isLoading)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-xl text-gray-600">Loading amazing camps...</p>
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-xl text-base-content/70">Loading amazing camps...</p>
         </div>
       </div>
     );
-  
-  if (error) 
+
+  if (error)
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-pink-50 flex items-center justify-center">
-        <div className="text-center p-8 bg-white rounded-2xl shadow-xl">
-          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Info className="w-8 h-8 text-red-500" />
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center p-8 bg-base-100 rounded-2xl shadow-xl">
+          <div className="w-16 h-16 bg-error/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Info className="w-8 h-8 text-error" />
           </div>
-          <p className="text-xl text-red-600 font-semibold">Oops! Something went wrong</p>
-          <p className="text-gray-500 mt-2">Unable to load camps at the moment</p>
+          <p className="text-xl font-semibold text-error">Oops! Something went wrong</p>
+          <p className="text-base-content/70 mt-2">Unable to load camps at the moment</p>
         </div>
       </div>
     );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 sm:p-6 lg:p-8">
+    <div className="min-h-screen p-4 sm:p-6 lg:p-8 bg-base-200">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold bg-gradient-to-r from-black to-purple-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-4">
             Available Medical Camps
           </h1>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-base-content/70 text-lg max-w-2xl mx-auto">
             Discover and join health camps near you. Quality healthcare made accessible for everyone.
           </p>
         </div>
 
         {/* Search and Controls */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border border-gray-100">
+        <div className="bg-base-100 rounded-2xl shadow-lg p-6 mb-8 border border-base-300">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             {/* Search Input */}
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-base-content/50" size={20} />
               <input
                 type="text"
                 placeholder="Search camps, locations, doctors..."
-                className="w-full border-2 border-gray-200 rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all duration-200"
+                className="w-full border-2 border-base-300 rounded-xl pl-12 pr-4 py-3 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-200 bg-base-100 text-base-content"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -113,7 +112,7 @@ const AvailableCamps = () => {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border-2 border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all duration-200 bg-white"
+                className="border-2 border-base-300 rounded-xl px-4 py-3 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all duration-200 bg-base-100 text-base-content"
               >
                 <option value="">Sort By</option>
                 <option value="most">Most Registered</option>
@@ -124,7 +123,7 @@ const AvailableCamps = () => {
 
               <button
                 onClick={() => setViewType(viewType === 'grid' ? 'table' : 'grid')}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white p-3 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg"
+                className="btn btn-primary p-3"
                 title="Toggle View"
               >
                 {viewType === 'grid' ? <List size={20} /> : <LayoutGrid size={20} />}
@@ -135,9 +134,9 @@ const AvailableCamps = () => {
 
         {/* Results Count */}
         <div className="mb-6">
-          <p className="text-gray-600">
-            Showing <span className="font-semibold text-blue-600">{paginatedCamps.length}</span> of{' '}
-            <span className="font-semibold text-blue-600">{filteredCamps.length}</span> camps
+          <p className="text-base-content/70">
+            Showing <span className="font-semibold text-primary">{paginatedCamps.length}</span> of{' '}
+            <span className="font-semibold text-primary">{filteredCamps.length}</span> camps
           </p>
         </div>
 
@@ -147,7 +146,7 @@ const AvailableCamps = () => {
             {paginatedCamps.map((camp) => (
               <div
                 key={camp._id}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group transform hover:-translate-y-1"
+                className="bg-base-100 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-base-300 group transform hover:-translate-y-1"
               >
                 <div className="relative overflow-hidden">
                   <img
@@ -155,43 +154,43 @@ const AvailableCamps = () => {
                     alt={camp.campName}
                     className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute top-4 right-4 bg-white bg-opacity-90 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium text-gray-700">
+                  <div className="absolute top-4 right-4 bg-base-200/70 backdrop-blur-sm rounded-full px-3 py-1 text-sm font-medium text-base-content">
                     {camp.participantCount} joined
                   </div>
                 </div>
-                
+
                 <div className="p-6">
-                  <h3 className="text-xl font-bold mb-3 text-gray-800 group-hover:text-blue-600 transition-colors">
+                  <h3 className="text-xl font-bold mb-3 text-base-content group-hover:text-primary transition-colors">
                     {camp.campName}
                   </h3>
-                  
-                  <div className="space-y-2 text-sm text-gray-600 mb-4">
+
+                  <div className="space-y-2 text-sm text-base-content/70 mb-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-50 rounded-full flex items-center justify-center">
-                        <Calendar size={14} className="text-blue-500" />
+                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                        <Calendar size={14} className="text-primary" />
                       </div>
                       <span>{new Date(camp.dateTime).toLocaleString()}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-green-50 rounded-full flex items-center justify-center">
-                        <MapPin size={14} className="text-green-500" />
+                      <div className="w-8 h-8 bg-secondary/10 rounded-full flex items-center justify-center">
+                        <MapPin size={14} className="text-secondary" />
                       </div>
                       <span>{camp.location}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-purple-50 rounded-full flex items-center justify-center">
-                        <Stethoscope size={14} className="text-purple-500" />
+                      <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center">
+                        <Stethoscope size={14} className="text-accent" />
                       </div>
                       <span>{camp.healthcareProfessional}</span>
                     </div>
                   </div>
-                  
-                  <p className="text-gray-600 text-sm mb-6 line-clamp-3">
+
+                  <p className="text-base-content/70 text-sm mb-6 line-clamp-3">
                     {camp.description?.slice(0, 120)}...
                   </p>
-                  
+
                   <Link to={`/camp/${camp._id}`} className="block">
-                    <button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-medium py-3 px-4 rounded-xl transition-all duration-200 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2">
+                    <button className="btn btn-primary w-full flex items-center justify-center gap-2">
                       <Info size={16} />
                       View Details
                     </button>
@@ -202,10 +201,10 @@ const AvailableCamps = () => {
           </div>
         ) : (
           // TABLE VIEW
-          <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100 mb-8">
+          <div className="bg-base-100 rounded-2xl shadow-lg overflow-hidden border border-base-300 mb-8">
             <div className="overflow-x-auto">
               <table className="min-w-full">
-                <thead className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                <thead className="bg-primary text-primary-content">
                   <tr>
                     <th className="px-6 py-4 text-left text-sm font-semibold">Image</th>
                     <th className="px-6 py-4 text-left text-sm font-semibold">Camp Name</th>
@@ -216,13 +215,11 @@ const AvailableCamps = () => {
                     <th className="px-6 py-4 text-center text-sm font-semibold">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-base-300">
                   {paginatedCamps.map((camp, index) => (
                     <tr
                       key={camp._id}
-                      className={`${
-                        index % 2 === 0 ? 'bg-white' : 'bg-gray-50'
-                      } hover:bg-blue-50 transition-colors duration-200`}
+                      className={`${index % 2 === 0 ? 'bg-base-100' : 'bg-base-200'} hover:bg-primary/10 transition-colors duration-200`}
                     >
                       <td className="px-6 py-4">
                         <img
@@ -231,19 +228,19 @@ const AvailableCamps = () => {
                           className="w-16 h-12 object-cover rounded-lg shadow-sm"
                         />
                       </td>
-                      <td className="px-6 py-4 font-semibold text-gray-800">{camp.campName}</td>
-                      <td className="px-6 py-4 text-gray-600">{new Date(camp.dateTime).toLocaleDateString()}</td>
-                      <td className="px-6 py-4 text-gray-600">{camp.location}</td>
-                      <td className="px-6 py-4 text-gray-600">{camp.healthcareProfessional}</td>
+                      <td className="px-6 py-4 font-semibold text-base-content">{camp.campName}</td>
+                      <td className="px-6 py-4 text-base-content/70">{new Date(camp.dateTime).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 text-base-content/70">{camp.location}</td>
+                      <td className="px-6 py-4 text-base-content/70">{camp.healthcareProfessional}</td>
                       <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-primary/20 text-primary">
                           {camp.participantCount}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
                         <Link
                           to={`/camp/${camp._id}`}
-                          className="inline-flex items-center gap-1 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 transform hover:scale-105"
+                          className="btn btn-primary btn-sm inline-flex items-center gap-1"
                         >
                           <Info size={14} />
                           View
@@ -260,40 +257,40 @@ const AvailableCamps = () => {
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="flex justify-center">
-            <nav className="flex items-center gap-2 bg-white rounded-2xl shadow-lg p-2 border border-gray-100">
+            <nav className="flex items-center gap-2 bg-base-100 rounded-2xl shadow-lg p-2 border border-base-300">
               <button
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
                 className={`p-2 rounded-xl transition-all duration-200 ${
                   currentPage === 1
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-blue-600'
+                    ? 'text-base-content/40 cursor-not-allowed'
+                    : 'text-base-content hover:bg-primary/10 hover:text-primary'
                 }`}
               >
                 <ChevronLeft size={20} />
               </button>
-              
+
               {[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentPage(i + 1)}
                   className={`px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
                     currentPage === i + 1
-                      ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-lg'
-                      : 'text-gray-600 hover:bg-gray-100 hover:text-blue-600'
+                      ? 'bg-primary text-primary-content shadow-lg'
+                      : 'text-base-content hover:bg-primary/10 hover:text-primary'
                   }`}
                 >
                   {i + 1}
                 </button>
               ))}
-              
+
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
                 className={`p-2 rounded-xl transition-all duration-200 ${
                   currentPage === totalPages
-                    ? 'text-gray-400 cursor-not-allowed'
-                    : 'text-gray-600 hover:bg-gray-100 hover:text-blue-600'
+                    ? 'text-base-content/40 cursor-not-allowed'
+                    : 'text-base-content hover:bg-primary/10 hover:text-primary'
                 }`}
               >
                 <ChevronRight size={20} />
@@ -307,4 +304,5 @@ const AvailableCamps = () => {
 };
 
 export default AvailableCamps;
+
 

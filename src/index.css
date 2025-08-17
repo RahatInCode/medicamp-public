@@ -1,4 +1,29 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark, retro;
+}
 @import "slick-carousel/slick/slick.css";
 @import "slick-carousel/slick/slick-theme.css";
+@import "tw-animate-css";
+
+@layer base {
+  body {
+    background-color: var(--daisyui-base-100);
+    color: var(--daisyui-base-content);
+  }
+
+  .bg-white {
+    background-color: var(--daisyui-base-100) !important;
+  }
+  .bg-gray-50 {
+    background-color: var(--daisyui-base-200) !important;
+  }
+  .text-gray-700 {
+    color: var(--daisyui-base-content) !important;
+  }
+  .border-gray-300 {
+    border-color: var(--daisyui-border) !important;
+  }
+}
+
+
