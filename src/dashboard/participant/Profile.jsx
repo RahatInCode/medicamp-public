@@ -42,7 +42,6 @@ export default function Profile() {
       }),
     onSuccess: async () => {
       try {
-        // Update Firebase Auth user profile
         if (auth.currentUser) {
           await updateProfile(auth.currentUser, {
             displayName: nameInput.trim(),
@@ -62,10 +61,14 @@ export default function Profile() {
     },
   });
 
-  if (authLoading) return <p className="p-6">Loading user info...</p>;
-  if (!user) return <p className="p-6">Please log in to view your profile.</p>;
-  if (isLoading) return <p className="p-6">Loading profile data...</p>;
-  if (isError) return <p className="p-6 text-red-600">Failed to load profile data.</p>;
+  if (authLoading)
+    return <p className="p-6 text-base-content/70">Loading user info...</p>;
+  if (!user)
+    return <p className="p-6 text-base-content/70">Please log in to view your profile.</p>;
+  if (isLoading)
+    return <p className="p-6 text-base-content/70">Loading profile data...</p>;
+  if (isError)
+    return <p className="p-6 text-error">Failed to load profile data.</p>;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -80,11 +83,15 @@ export default function Profile() {
   const displayImage =
     imageInput ||
     user.photoURL ||
-    `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=random`;
+    `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      displayName
+    )}&background=random`;
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-6 text-center">Participant Profile</h2>
+    <div className="max-w-md mx-auto p-6 bg-base-100 rounded shadow-md">
+      <h2 className="text-2xl font-bold mb-6 text-center text-base-content">
+        Participant Profile
+      </h2>
 
       <div className="flex flex-col items-center space-y-4 mb-6">
         <img
@@ -92,32 +99,37 @@ export default function Profile() {
           alt="Profile"
           className="w-24 h-24 rounded-full object-cover border"
         />
-        <p className="text-xl font-semibold">{displayName}</p>
-        <p className="text-gray-500">{user.email}</p>
+        <p className="text-xl font-semibold text-base-content">{displayName}</p>
+        <p className="text-base-content/70">{user.email}</p>
 
         {data?.[0] && (
-          <div className="mt-2 text-sm text-gray-700 space-y-1">
-            <p><strong>Phone:</strong> {data[0].phone || "N/A"}</p>
-            <p><strong>Age:</strong> {data[0].age || "N/A"}</p>
-            <p><strong>Gender:</strong> {data[0].gender || "N/A"}</p>
-            <p><strong>Emergency Contact:</strong> {data[0].emergencyContact || "N/A"}</p>
+          <div className="mt-2 text-sm text-base-content/70 space-y-1">
+            <p>
+              <strong>Phone:</strong> {data[0].phone || "N/A"}
+            </p>
+            <p>
+              <strong>Age:</strong> {data[0].age || "N/A"}
+            </p>
+            <p>
+              <strong>Gender:</strong> {data[0].gender || "N/A"}
+            </p>
+            <p>
+              <strong>Emergency Contact:</strong> {data[0].emergencyContact || "N/A"}
+            </p>
           </div>
         )}
       </div>
 
       {!isEditing && (
-        <button
-          className="btn btn-primary w-full"
-          onClick={() => setIsEditing(true)}
-        >
+        <button className="btn btn-primary w-full" onClick={() => setIsEditing(true)}>
           Update Profile
         </button>
       )}
 
       {isEditing && (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div>
-            <label className="block mb-1 font-semibold">Name</label>
+            <label className="block mb-1 font-semibold text-base-content">Name</label>
             <input
               type="text"
               value={nameInput}
@@ -129,7 +141,7 @@ export default function Profile() {
             />
           </div>
           <div>
-            <label className="block mb-1 font-semibold">Image URL</label>
+            <label className="block mb-1 font-semibold text-base-content">Image URL</label>
             <input
               type="text"
               value={imageInput}

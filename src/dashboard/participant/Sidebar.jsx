@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { 
   User, 
@@ -16,15 +15,15 @@ const sidebarItems = [
 
 const Sidebar = ({ activeTab, setActiveTab }) => {
   return (
-    <div className="w-64 bg-white shadow-xl min-h-screen">
-      <div className="p-6 border-b border-gray-200">
+    <div className="w-64 bg-base-100 shadow-xl min-h-screen transition-colors duration-300">
+      <div className="p-6 border-b border-base-300">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-full flex items-center justify-center">
             <User className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-800">Dashboard</h2>
-            <p className="text-sm text-gray-600">Welcome back!</p>
+            <h2 className="text-lg font-bold text-base-content">Dashboard</h2>
+            <p className="text-sm text-base-content/70">Welcome back!</p>
           </div>
         </div>
       </div>
@@ -36,13 +35,14 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center space-x-3 px-6 py-3 text-left transition-all duration-200 hover:bg-gray-50 ${
-                activeTab === item.id
-                  ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
-                  : 'text-gray-700 hover:text-purple-600'
-              }`}
+              className={`w-full flex items-center space-x-3 px-6 py-3 text-left transition-all duration-200 rounded-lg
+                ${
+                  activeTab === item.id
+                    ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg'
+                    : 'text-base-content hover:text-primary hover:bg-base-200'
+                }`}
             >
-              <Icon className="w-5 h-5" />
+              <Icon className={`w-5 h-5 ${activeTab === item.id ? 'text-white' : 'text-base-content'}`} />
               <span className="font-medium">{item.label}</span>
             </button>
           );
@@ -53,3 +53,4 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
 };
 
 export default Sidebar;
+

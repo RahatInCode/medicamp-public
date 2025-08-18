@@ -26,7 +26,6 @@ const feedbacks = [
       "Very friendly staff, clean environment, and instant reports. Highly recommend!",
     rating: 5,
   },
-  // New feedback cards added here
   {
     name: "Farhana Islam",
     image: "https://randomuser.me/api/portraits/women/12.jpg",
@@ -52,12 +51,12 @@ const feedbacks = [
 
 export default function FeedbackSection() {
   return (
-    <section className="bg-white py-16 px-4 md:px-10">
+    <section className="bg-base-200 py-16 px-4 md:px-10 transition-colors duration-300">
       <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-base-content">
           What Patients Say
         </h2>
-        <p className="text-gray-500 mb-12 max-w-xl mx-auto">
+        <p className="text-base-content/70 mb-12 max-w-xl mx-auto">
           Real stories from real people. Here’s how MediCamp made a difference.
         </p>
 
@@ -74,10 +73,10 @@ export default function FeedbackSection() {
         >
           {feedbacks.map((item, index) => (
             <SwiperSlide key={index}>
-              <div className="bg-gray-50 p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-full relative">
+              <div className="bg-base-100 p-6 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 h-full relative">
                 {/* Quote icon */}
                 <svg
-                  className="w-8 h-8 text-gray-300 absolute top-6 right-6"
+                  className="w-8 h-8 text-base-content/30 absolute top-6 right-6"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
@@ -89,10 +88,10 @@ export default function FeedbackSection() {
                   <img
                     src={item.image}
                     alt={item.name}
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-12 h-12 rounded-full object-cover border border-base-300"
                   />
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-800">
+                    <h3 className="text-lg font-semibold text-base-content">
                       {item.name}
                     </h3>
                     <div className="text-yellow-400 text-sm">
@@ -100,7 +99,7 @@ export default function FeedbackSection() {
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-600 text-sm">{item.feedback}</p>
+                <p className="text-base-content/70 text-sm">{item.feedback}</p>
               </div>
             </SwiperSlide>
           ))}
@@ -108,6 +107,6 @@ export default function FeedbackSection() {
       </div>
     </section>
   )
-} 
+}
 
 

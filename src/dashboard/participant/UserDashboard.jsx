@@ -9,10 +9,9 @@ import {
   User,
   Calendar,
   UserCircle,
-} from "lucide-react"; 
+} from "lucide-react";
 
 const sidebarItems = [
-  
   { name: "User Analytics", path: "user-analytics", icon: <UserCircle size={20} /> },
   { name: "Feedback", path: "feedback", icon: <MessageSquare size={20} /> },
   { name: "Payment History", path: "payment-history", icon: <CreditCard size={20} /> },
@@ -25,26 +24,26 @@ const UserDashboard = () => {
   const location = useLocation();
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-base-200 transition-colors duration-300">
       {/* Sidebar */}
       <motion.nav
         initial={{ width: sidebarOpen ? 240 : 70 }}
         animate={{ width: sidebarOpen ? 240 : 70 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-        className="bg-white shadow-lg flex flex-col"
+        className="bg-base-100 shadow-lg flex flex-col transition-colors duration-300"
       >
-        <div className="flex items-center justify-between px-4 py-4 border-b border-gray-200">
+        <div className="flex items-center justify-between px-4 py-4 border-b border-base-300">
           <motion.h1
-            className="text-xl font-bold text-indigo-600"
+            className="text-xl font-bold text-primary"
             initial={{ opacity: 0 }}
             animate={{ opacity: sidebarOpen ? 1 : 0 }}
             transition={{ duration: 0.3 }}
           >
-            Medicamp
+            MediCamp
           </motion.h1>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="text-indigo-600 focus:outline-none"
+            className="text-primary focus:outline-none"
             aria-label="Toggle sidebar"
           >
             {sidebarOpen ? "⬅️" : "➡️"}
@@ -58,8 +57,8 @@ const UserDashboard = () => {
               <li key={path}>
                 <NavLink
                   to={path}
-                  className={`flex items-center gap-4 px-4 py-3 text-gray-700 hover:bg-indigo-100 hover:text-indigo-700 ${
-                    active ? "bg-indigo-100 text-indigo-700 font-semibold" : ""
+                  className={`flex items-center gap-4 px-4 py-3 rounded-lg transition-all duration-200 hover:bg-primary/20 hover:text-primary ${
+                    active ? "bg-primary/20 text-primary font-semibold" : "text-base-content"
                   }`}
                 >
                   <span>{icon}</span>
@@ -84,7 +83,7 @@ const UserDashboard = () => {
       </motion.nav>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-auto">
+      <main className="flex-1 p-6 overflow-auto bg-base-200 transition-colors duration-300">
         <Outlet />
       </main>
     </div>
@@ -92,4 +91,5 @@ const UserDashboard = () => {
 };
 
 export default UserDashboard;
+
 

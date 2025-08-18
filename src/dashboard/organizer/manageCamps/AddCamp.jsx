@@ -33,16 +33,17 @@ const AddCamp = () => {
       setPreview(null);
       navigate('/organizer/dashboard');
     } catch (err) {
-  toast.error(err.message) 
-} finally {
+      toast.error(err.message);
+    } finally {
       setLoading(false);
     }
   };
 
   return (
-<div className="max-w-3xl mx-auto p-6 bg-white dark:bg-gray-900 text-gray-900 dark:text-white rounded-2xl shadow-xl mt-10">
-  <h2 className="text-3xl font-bold text-center mb-6">📋 Add a New Camp</h2>
-  <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+    <div className="max-w-3xl mx-auto p-6 bg-base-100 text-base-content rounded-2xl shadow-xl mt-10 transition-colors duration-300">
+      <h2 className="text-3xl font-bold text-center mb-6">📋 Add a New Camp</h2>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        {/** Camp Name */}
         <div>
           <label className="font-semibold">Camp Name</label>
           <input
@@ -51,9 +52,12 @@ const AddCamp = () => {
             className="input input-bordered w-full mt-1"
             placeholder="Example: Blood Donation Camp"
           />
-          {errors.campName && <p className="text-red-500 text-sm">{errors.campName.message}</p>}
+          {errors.campName && (
+            <p className="text-error text-sm mt-1">{errors.campName.message}</p>
+          )}
         </div>
 
+        {/** Camp Fees */}
         <div>
           <label className="font-semibold">Camp Fees</label>
           <input
@@ -62,9 +66,12 @@ const AddCamp = () => {
             className="input input-bordered w-full mt-1"
             placeholder="Ex: 500"
           />
-          {errors.campFees && <p className="text-red-500 text-sm">{errors.campFees.message}</p>}
+          {errors.campFees && (
+            <p className="text-error text-sm mt-1">{errors.campFees.message}</p>
+          )}
         </div>
 
+        {/** Date & Time */}
         <div>
           <label className="font-semibold">Date & Time</label>
           <input
@@ -72,9 +79,12 @@ const AddCamp = () => {
             {...register('dateTime', { required: 'Date & time is required' })}
             className="input input-bordered w-full mt-1"
           />
-          {errors.dateTime && <p className="text-red-500 text-sm">{errors.dateTime.message}</p>}
+          {errors.dateTime && (
+            <p className="text-error text-sm mt-1">{errors.dateTime.message}</p>
+          )}
         </div>
 
+        {/** Location */}
         <div>
           <label className="font-semibold">Location</label>
           <input
@@ -83,9 +93,12 @@ const AddCamp = () => {
             className="input input-bordered w-full mt-1"
             placeholder="Example: Dhanmondi, Dhaka"
           />
-          {errors.location && <p className="text-red-500 text-sm">{errors.location.message}</p>}
+          {errors.location && (
+            <p className="text-error text-sm mt-1">{errors.location.message}</p>
+          )}
         </div>
 
+        {/** Healthcare Professional */}
         <div>
           <label className="font-semibold">Healthcare Professional</label>
           <input
@@ -97,20 +110,26 @@ const AddCamp = () => {
             placeholder="Ex: Dr. Raihan Islam"
           />
           {errors.healthcareProfessional && (
-            <p className="text-red-500 text-sm">{errors.healthcareProfessional.message}</p>
+            <p className="text-error text-sm mt-1">
+              {errors.healthcareProfessional.message}
+            </p>
           )}
         </div>
 
+        {/** Description */}
         <div>
           <label className="font-semibold">Description</label>
           <textarea
             {...register('description', { required: 'Description is required' })}
             className="textarea textarea-bordered w-full mt-1"
             placeholder="Describe the purpose and process of the camp"
-          ></textarea>
-          {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+          />
+          {errors.description && (
+            <p className="text-error text-sm mt-1">{errors.description.message}</p>
+          )}
         </div>
 
+        {/** Camp Image */}
         <div>
           <label className="font-semibold">Camp Image</label>
           <input
@@ -120,22 +139,30 @@ const AddCamp = () => {
             className="input input-bordered w-full mt-1"
             placeholder="Paste image URL or upload image"
           />
-          {errors.image && <p className="text-red-500 text-sm">{errors.image.message}</p>}
+          {errors.image && (
+            <p className="text-error text-sm mt-1">{errors.image.message}</p>
+          )}
           {preview && (
             <img
               src={preview}
               alt="Camp Preview"
-              className="h-40 mt-2 rounded-lg border shadow-md object-cover"
+              className="h-40 mt-2 rounded-lg border border-base-300 shadow-md object-cover"
             />
           )}
         </div>
 
+        {/** Submit Button */}
         <button
           type="submit"
           className="btn btn-primary w-full flex items-center justify-center"
           disabled={loading}
         >
-          {loading ? <Loader2 className="animate-spin" /> : <UploadCloud className="mr-2" />} Add Camp
+          {loading ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            <UploadCloud className="mr-2" />
+          )}
+          Add Camp
         </button>
       </form>
     </div>

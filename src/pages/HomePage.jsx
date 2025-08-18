@@ -23,8 +23,8 @@ const HomePage = () => {
     return (
       <section className="px-6 py-10 max-w-7xl mx-auto">
         <div className="flex items-center justify-center min-h-[400px]">
-          <div className="flex items-center gap-3 text-gray-500">
-            <div className="w-6 h-6 border-2 border-gray-300 border-t-primary rounded-full animate-spin"></div>
+          <div className="flex items-center gap-3 text-base-content/70">
+            <div className="w-6 h-6 border-2 border-base-300 border-t-primary rounded-full animate-spin"></div>
             <span className="text-lg font-medium">Loading top camps...</span>
           </div>
         </div>
@@ -38,14 +38,14 @@ const HomePage = () => {
       <div className="mb-10">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-gradient-to-r from-orange-500 to-red-500 rounded-lg">
+            <div className="p-2 bg-gradient-to-r from-primary to-secondary rounded-lg">
               <TrendingUp className="w-5 h-5 text-white" />
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+            <h2 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-base-content to-base-content/70 bg-clip-text text-transparent">
               Most Registered Camps
             </h2>
           </div>
-          <p className="text-gray-600 text-sm md:text-base max-w-2xl">
+          <p className="text-base-content/70 text-sm md:text-base max-w-2xl">
             Discover the most popular camps with highest participation rates
           </p>
         </div>
@@ -56,7 +56,7 @@ const HomePage = () => {
         {topCamps.map((camp, index) => (
           <div 
             key={camp._id} 
-            className="group bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-2xl hover:shadow-gray-200/50 transition-all duration-500 hover:-translate-y-1"
+            className="group bg-base-100 rounded-3xl shadow-sm border border-base-300 overflow-hidden hover:shadow-2xl hover:shadow-base-300/50 transition-all duration-500 hover:-translate-y-1"
           >
             {/* Image Container */}
             <div className="relative overflow-hidden">
@@ -69,7 +69,7 @@ const HomePage = () => {
               
               {/* Ranking Badge */}
               <div className="absolute top-4 left-4">
-                <div className="bg-white/90 backdrop-blur-sm text-gray-800 px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
+                <div className="bg-base-100/90 backdrop-blur-sm text-base-content px-3 py-1 rounded-full text-sm font-semibold shadow-lg">
                   #{index + 1} Popular
                 </div>
               </div>
@@ -78,28 +78,28 @@ const HomePage = () => {
             {/* Content */}
             <div className="p-6 space-y-4">
               {/* Title */}
-              <h3 className="text-xl font-bold text-gray-900 group-hover:text-primary transition-colors duration-300 line-clamp-2">
+              <h3 className="text-xl font-bold text-base-content group-hover:text-primary transition-colors duration-300 line-clamp-2">
                 {camp.title}
               </h3>
 
               {/* Location & Date */}
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <MapPin className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-2 text-base-content/70">
+                  <MapPin className="w-4 h-4 text-base-content/50" />
                   <span className="text-sm font-medium">{camp.location}</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Calendar className="w-4 h-4 text-gray-400" />
+                <div className="flex items-center gap-2 text-base-content/70">
+                  <Calendar className="w-4 h-4 text-base-content/50" />
                   <span className="text-sm">{camp.date}</span>
                 </div>
               </div>
 
               {/* Participant Count */}
-              <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-xl">
+              <div className="flex items-center gap-2 p-3 bg-base-200 rounded-xl">
                 <div className="p-1.5 bg-primary/10 rounded-lg">
                   <Users className="w-4 h-4 text-primary" />
                 </div>
-                <span className="text-sm font-semibold text-gray-700">
+                <span className="text-sm font-semibold text-base-content/80">
                   {camp.participantCount} Registered
                 </span>
               </div>
@@ -122,18 +122,18 @@ const HomePage = () => {
       {/* Empty State */}
       {topCamps.length === 0 && (
         <div className="text-center py-16">
-          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Users className="w-8 h-8 text-gray-400" />
+          <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Users className="w-8 h-8 text-base-content/50" />
           </div>
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">No camps found</h3>
-          <p className="text-gray-500">Check back later for exciting camp opportunities!</p>
+          <h3 className="text-xl font-semibold text-base-content/80 mb-2">No camps found</h3>
+          <p className="text-base-content/60">Check back later for exciting camp opportunities!</p>
         </div>
       )}
 
       {/* View All Camps Button */}
       <div className="flex justify-center mt-12">
         <Link to="/camps" className="group">
-          <button className="flex items-center gap-2 bg-gradient-to-r from-primary to-primary/90 text-white px-8 py-4 rounded-2xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 transform hover:scale-[1.02] font-medium text-lg">
+          <button className="flex items-center gap-2 bg-gradient-to-r from-primary to-secondary text-white px-8 py-4 rounded-2xl hover:shadow-lg hover:shadow-primary/25 transition-all duration-300 transform hover:scale-[1.02] font-medium text-lg">
             <span>View All Camps</span>
             <ExternalLink className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
           </button>

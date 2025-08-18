@@ -1,36 +1,43 @@
-import { useQuery } from '@tanstack/react-query'
-import axiosSecure from '../../api/axiosSecure'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import { Autoplay, Pagination, EffectFade } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/pagination'
-import 'swiper/css/effect-fade'
+import { useQuery } from "@tanstack/react-query"
+import axiosSecure from "../../api/axiosSecure"
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Autoplay, Pagination, EffectFade } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/pagination"
+import "swiper/css/effect-fade"
 
 export default function FeedbackSection() {
   const { data: feedbacks = [], isLoading, isError } = useQuery({
-    queryKey: ['feedbacks'],
+    queryKey: ["feedbacks"],
     queryFn: async () => {
-      const res = await axiosSecure.get('/feedback')
+      const res = await axiosSecure.get("/feedback")
       return res.data
     },
   })
 
   if (isLoading) return <p className="text-center py-10">Loading feedback...</p>
-  if (isError) return <p className="text-center py-10 text-red-500">Failed to load feedback.</p>
+  if (isError)
+    return (
+      <p className="text-center py-10 text-error">Failed to load feedback.</p>
+    )
 
   return (
-    <section className="bg-white py-16 px-4 md:px-10">
+    <section className="bg-base-100 py-16 px-4 md:px-10">
       <div className="max-w-6xl mx-auto text-center">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
+        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-base-content">
           What Patients Say
         </h2>
-        <p className="text-gray-500 mb-12 max-w-xl mx-auto">
+        <p className="text-base-content/70 mb-12 max-w-xl mx-auto">
           Real stories from real people. Here’s how MediCamp made a difference.
         </p>
 
         <Swiper
           modules={[Autoplay, Pagination, EffectFade]}
-          autoplay={{ delay: 3000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }}
           loop={true}
           pagination={{ clickable: true }}
           grabCursor={true}
@@ -43,10 +50,10 @@ export default function FeedbackSection() {
         >
           {feedbacks.map((item, index) => (
             <SwiperSlide key={index}>
-              <div className="bg-gray-50 p-6 rounded-2xl shadow-lg hover:shadow-xl transform transition-transform duration-300 hover:scale-[1.02] h-full flex flex-col justify-between">
+              <div className="bg-base-200 p-6 rounded-2xl shadow-md hover:shadow-lg transform transition-transform duration-300 hover:scale-[1.02] h-full flex flex-col justify-between">
                 {/* Quote icon */}
                 <svg
-                  className="w-8 h-8 text-gray-300 mb-2 self-end"
+                  className="w-8 h-8 text-base-content/30 mb-2 self-end"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -55,21 +62,26 @@ export default function FeedbackSection() {
 
                 <div className="flex items-center gap-4 mb-4">
                   <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(item.participantName)}&background=random`}
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                      item.participantName
+                    )}&background=random`}
                     alt={item.participantName}
                     className="w-12 h-12 rounded-full object-cover"
                   />
                   <div className="text-left">
-                    <h3 className="text-base font-semibold text-gray-800">
+                    <h3 className="text-base font-semibold text-base-content">
                       {item.participantName}
                     </h3>
-                    <div className="text-yellow-500 text-sm">
-                      {"★".repeat(item.rating) + "☆".repeat(5 - item.rating)}
+                    <div className="text-warning text-sm">
+                      {"★".repeat(item.rating) +
+                        "☆".repeat(5 - item.rating)}
                     </div>
                   </div>
                 </div>
 
-                <p className="text-gray-600 text-sm">{item.feedback}</p>
+                <p className="text-base-content/70 text-sm">
+                  {item.feedback}
+                </p>
               </div>
             </SwiperSlide>
           ))}
@@ -78,4 +90,5 @@ export default function FeedbackSection() {
     </section>
   )
 }
+
 

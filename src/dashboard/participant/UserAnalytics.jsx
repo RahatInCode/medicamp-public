@@ -22,16 +22,15 @@ const UserAnalytics = () => {
     enabled: !!user?.email,
     queryFn: async () => {
       const res = await axiosSecure.get(`/participantRegistrations/user?email=${user.email}`);
-
       return res.data;
-    }
+    },
   });
 
-  if (isLoading) return <p className="text-center text-gray-500">Loading analytics...</p>;
+  if (isLoading)
+    return <p className="text-center py-6 text-base-content/70">Loading analytics...</p>;
 
-  if (!Array.isArray(registeredCamps)) {
-    return <p className="text-center text-red-500">Invalid data format passed!</p>;
-  }
+  if (!Array.isArray(registeredCamps))
+    return <p className="text-center py-6 text-error">Invalid data format passed!</p>;
 
   const totalCamps = registeredCamps.length;
   const campsPaid = registeredCamps.filter(c => c.paymentStatus === 'Paid').length;
@@ -52,7 +51,7 @@ const UserAnalytics = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white shadow-md rounded-xl p-6 text-center text-gray-500"
+        className="bg-base-200 shadow-md rounded-xl p-6 text-center text-base-content/70"
       >
         No camp data found. Register for some camps to see your analytics!
       </motion.div>
@@ -64,9 +63,9 @@ const UserAnalytics = () => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.6 }}
-      className="bg-white shadow-xl rounded-2xl p-8 max-w-4xl mx-auto"
+      className="bg-base-100 shadow-xl rounded-2xl p-8 max-w-4xl mx-auto transition-colors duration-300"
     >
-      <h2 className="text-3xl font-bold text-indigo-700 mb-6 tracking-wide drop-shadow-md">
+      <h2 className="text-3xl font-bold mb-6 tracking-wide drop-shadow-md text-primary">
         Your Camp Performance 📊
       </h2>
 
@@ -78,15 +77,15 @@ const UserAnalytics = () => {
         >
           <defs>
             <linearGradient id="colorPrimary" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.9} />
-              <stop offset="95%" stopColor="#A5B4FC" stopOpacity={0.6} />
+              <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.9} />
+              <stop offset="95%" stopColor="var(--color-primary-focus)" stopOpacity={0.6} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--color-base-300)" />
           <XAxis
             dataKey="name"
-            tick={{ fontSize: 14, fill: '#4338ca', fontWeight: '600' }}
-            axisLine={{ stroke: '#c7d2fe' }}
+            tick={{ fontSize: 14, fill: 'var(--color-base-content)', fontWeight: 600 }}
+            axisLine={{ stroke: 'var(--color-base-300)' }}
             tickLine={false}
             interval={0}
             angle={-15}
@@ -95,14 +94,19 @@ const UserAnalytics = () => {
           />
           <YAxis
             allowDecimals={false}
-            tick={{ fontSize: 14, fill: '#4338ca', fontWeight: '600' }}
-            axisLine={{ stroke: '#c7d2fe' }}
+            tick={{ fontSize: 14, fill: 'var(--color-base-content)', fontWeight: 600 }}
+            axisLine={{ stroke: 'var(--color-base-300)' }}
             tickLine={false}
             width={60}
           />
           <Tooltip
             cursor={{ fill: 'rgba(99, 102, 241, 0.1)' }}
-            contentStyle={{ borderRadius: 8, borderColor: '#6366f1' }}
+            contentStyle={{
+              borderRadius: 8,
+              borderColor: 'var(--color-primary)',
+              backgroundColor: 'var(--color-base-100)',
+              color: 'var(--color-base-content)',
+            }}
           />
           <Legend verticalAlign="top" height={36} />
           <Bar
@@ -116,7 +120,7 @@ const UserAnalytics = () => {
         </BarChart>
       </ResponsiveContainer>
 
-      <div className="mt-8 flex justify-around text-indigo-700 font-semibold">
+      <div className="mt-8 flex justify-around text-base-content font-semibold">
         <div className="flex flex-col items-center">
           <span className="text-4xl">{totalCamps}</span>
           <span className="text-sm mt-1">Total Camps Joined</span>
@@ -139,6 +143,7 @@ const UserAnalytics = () => {
 };
 
 export default UserAnalytics;
+
 
 
 

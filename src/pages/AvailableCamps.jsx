@@ -84,7 +84,7 @@ const AvailableCamps = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary mb-4">
+          <h1 className="text-4xl sm:text-5xl font-bold  bg-clip-text bg-gradient-to-r from-primary to-secondary mb-4">
             Available Medical Camps
           </h1>
           <p className="text-base-content/70 text-lg max-w-2xl mx-auto">

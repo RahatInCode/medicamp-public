@@ -25,11 +25,11 @@ const Toast = ({ show, type, message, onClose }) => {
   const getToastStyles = () => {
     switch (type) {
       case 'success':
-        return { bg: 'bg-green-500', icon: CheckCircle, iconColor: 'text-white' };
+        return { bg: 'bg-green-50 dark:bg-green-900/300', icon: CheckCircle, iconColor: 'text-white' };
       case 'error':
         return { bg: 'bg-red-500', icon: XCircle, iconColor: 'text-white' };
       default:
-        return { bg: 'bg-blue-500', icon: CheckCircle, iconColor: 'text-white' };
+        return { bg: 'bg-blue-50 dark:bg-blue-900/300', icon: CheckCircle, iconColor: 'text-white' };
     }
   };
 
@@ -51,7 +51,7 @@ const Toast = ({ show, type, message, onClose }) => {
 };
 
 const CampDetails = () => {
-  const { campId } = useParams(); // ✅ Must be defined as :campId in your Route
+  const { campId } = useParams();
   const queryClient = useQueryClient();
 const { user } = useContext(AuthContext);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -150,8 +150,8 @@ const registration = {
   // ✅ Loading UI
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-lg font-medium text-gray-600">Loading camp details...</p>
+      <div className="min-h-screen flex items-center justify-center bg-base-100 dark:bg-base-800">
+        <p className="text-lg font-medium text-base-content/70">Loading camp details...</p>
       </div>
     );
   }
@@ -161,7 +161,7 @@ const registration = {
     console.error("❌ Camp fetch failed:", error.message, error.response?.data);
     return (
       <div className="min-h-screen flex items-center justify-center bg-red-50">
-        <div className="text-center p-8 bg-white rounded-xl shadow">
+        <div className="text-center p-8 bg-base-100 dark:bg-base-800 rounded-xl shadow">
           <AlertCircle className="w-12 h-12 text-red-600 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-red-600 mb-2">Error loading camp</h2>
           <p className="text-gray-500">{error.response?.data?.message || "Please try again later."}</p>
@@ -182,7 +182,7 @@ const registration = {
 
       <div className="max-w-5xl mx-auto">
         {/* Hero Section */}
-        <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8">
+        <div className="bg-base-100 dark:bg-base-800 rounded-3xl shadow-xl overflow-hidden mb-8">
           <div className="relative">
             <img 
               src={camp.image || 'https://via.placeholder.com/1200x400?text=Medical+Camp'} 
@@ -204,19 +204,19 @@ const registration = {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Description */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <div className="bg-base-100 dark:bg-base-800rounded-2xl shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-base-content mb-4 flex items-center gap-2">
                 <Heart className="w-6 h-6 text-red-500" />
                 About This Camp
               </h2>
-              <p className="text-gray-600 leading-relaxed text-lg">
+              <p className="text-base-content/70 leading-relaxed text-lg">
                 {camp.description}
               </p>
             </div>
 
             {/* Features */}
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <div className="bg-base-100 dark:bg-base-800 rounded-2xl shadow-lg p-8">
+              <h2 className="text-2xl font-bold text-base-content mb-6 flex items-center gap-2">
                 <Shield className="w-6 h-6 text-blue-500" />
                 What's Included
               </h2>
@@ -229,7 +229,7 @@ const registration = {
                   'Blood Pressure Monitoring',
                   'BMI Assessment'
                 ].map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
+                  <div key={index} className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
                     <CheckCircle className="w-5 h-5 text-green-500" />
                     <span className="text-gray-700">{feature}</span>
                   </div>
@@ -241,27 +241,27 @@ const registration = {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Camp Info Card */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-6">
-              <h3 className="text-xl font-bold text-gray-800 mb-6">Camp Information</h3>
+            <div className="bg-base-100 dark:bg-base-800 rounded-2xl shadow-lg p-6 sticky top-6">
+              <h3 className="text-xl font-bold text-base-content mb-6">Camp Information</h3>
               
               <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-xl">
-                  <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
+                  <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/300 rounded-full flex items-center justify-center">
                     <DollarSign className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Registration Fee</p>
+                    <p className="text-sm text-base-content/70">Registration Fee</p>
                     <p className="text-xl font-bold text-blue-600">{camp.campFees} BDT</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 p-4 bg-green-50 rounded-xl">
-                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                <div className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-900/30 rounded-xl">
+                  <div className="w-12 h-12 bg-green-50 dark:bg-green-900/300 rounded-full flex items-center justify-center">
                     <Calendar className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Date & Time</p>
-                    <p className="font-semibold text-gray-800">{new Date(camp.dateTime).toLocaleString()}</p>
+                    <p className="text-sm text-base-content/70">Date & Time</p>
+                    <p className="font-semibold text-base-content">{new Date(camp.dateTime).toLocaleString()}</p>
                   </div>
                 </div>
 
@@ -270,8 +270,8 @@ const registration = {
                     <MapPin className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Location</p>
-                    <p className="font-semibold text-gray-800">{camp.location}</p>
+                    <p className="text-sm text-base-content/70">Location</p>
+                    <p className="font-semibold text-base-content">{camp.location}</p>
                   </div>
                 </div>
 
@@ -280,8 +280,8 @@ const registration = {
                     <Stethoscope className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Healthcare Professional</p>
-                    <p className="font-semibold text-gray-800">{camp.healthcareProfessional}</p>
+                    <p className="text-sm text-base-content/70">Healthcare Professional</p>
+                    <p className="font-semibold text-base-content">{camp.healthcareProfessional}</p>
                   </div>
                 </div>
 
@@ -290,8 +290,8 @@ const registration = {
                     <Users className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Participants</p>
-                    <p className="font-semibold text-gray-800">{camp.participantCount} registered</p>
+                    <p className="text-sm text-base-content/70">Participants</p>
+                    <p className="font-semibold text-base-content">{camp.participantCount} registered</p>
                   </div>
                 </div>
               </div>
@@ -311,7 +311,7 @@ const registration = {
       {/* Registration Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-slate-300 bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50 p-4">
-          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-in fade-in duration-300">
+          <div className="bg-base-100 dark:bg-base-800 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative animate-in fade-in duration-300">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-6 right-6 w-10 h-10 bg-red-100 hover:bg-red-200 rounded-full flex items-center justify-center transition-colors z-10"
@@ -324,8 +324,8 @@ const registration = {
                 <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
                   <UserCheck className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-3xl font-bold text-gray-800 mb-2">Camp Registration</h3>
-                <p className="text-gray-600">Fill in your details to join this amazing health camp</p>
+                <h3 className="text-3xl font-bold text-base-content mb-2">Camp Registration</h3>
+                <p className="text-base-content/70">Fill in your details to join this amazing health camp</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
@@ -337,7 +337,7 @@ const registration = {
                       type="text" 
                       value={camp.campName} 
                       readOnly 
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                      className="w-full px-4 py-3 bg-base-100 dark:bg-base-700 border border-gray-200 rounded-xl focus:outline-none text-base-content/70"
                     />
                   </div>
                   <div>
@@ -346,7 +346,7 @@ const registration = {
                       type="text" 
                       value={`${camp.campFees} BDT`} 
                       readOnly 
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                      className="w-full px-4 py-3 bg-base-100 dark:bg-base-700 border border-gray-200 rounded-xl focus:outline-none text-base-content/70"
                     />
                   </div>
                 </div>
@@ -358,7 +358,7 @@ const registration = {
                       type="text" 
                       value={camp.location} 
                       readOnly 
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                      className="w-full px-4 py-3 bg-base-100 dark:bg-base-700 border border-gray-200 rounded-xl focus:outline-none text-base-content/70"
                     />
                   </div>
                   <div>
@@ -367,7 +367,7 @@ const registration = {
                       type="text" 
                       value={camp.healthcareProfessional} 
                       readOnly 
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                      className="w-full px-4 py-3 bg-base-100 dark:bg-base-700 border border-gray-200 rounded-xl focus:outline-none text-base-content/70"
                     />
                   </div>
                 </div>
@@ -379,7 +379,7 @@ const registration = {
                       type="text" 
                         value={loggedInUser.participantName}
                       readOnly 
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                      className="w-full px-4 py-3 bg-base-100 dark:bg-base-700 border border-gray-200 rounded-xl focus:outline-none text-base-content/70"
                     />
                   </div>
                   <div>
@@ -388,13 +388,13 @@ const registration = {
                       type="email" 
                         value={loggedInUser.participantEmail}
                       readOnly 
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none text-gray-600"
+                      className="w-full px-4 py-3 bg-base-100 dark:bg-base-700 border border-gray-200 rounded-xl focus:outline-none text-base-content/70"
                     />
                   </div>
                 </div>
 
                 <div className="border-t pt-6">
-                  <h4 className="text-lg font-semibold text-gray-800 mb-4">Additional Information</h4>
+                  <h4 className="text-lg font-semibold text-base-content mb-4">Additional Information</h4>
                   
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>

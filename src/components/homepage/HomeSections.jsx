@@ -17,8 +17,6 @@ import heart from "../../assets/news/heart.jpg";
 import vaccine from "../../assets/news/vaccine.jpg";
 import diabetes from "../../assets/news/diabetes.jpg";
 
-
-
 // Doctor Data
 const doctors = [
   { name: "Dr. Sarah Khan", specialty: "Cardiologist", img: doc1 },
@@ -27,20 +25,18 @@ const doctors = [
   { name: "Dr. Saraf Khan", specialty: "Pathologist", img: doc4 },
   { name: "Dr. Ahmed Rahat", specialty: "Psychiatrist", img: doc5 },
   { name: "Dr. Sneha Benzir", specialty: "Neurologist", img: doc6 },
-  // Special tall image (no name/specialty)
   { name: "", specialty: "", img: docRight },
 ];
 
-
 // News Data
 const news = [
-  { title: "5 Tips to Improve Heart Health", img:heart, icon: <FaHeartbeat className="text-red-500 text-xl" />, link: "#" },
-  { title: "New Vaccine Breakthrough", img:vaccine, icon: <FaSyringe className="text-blue-500 text-xl" />, link: "#" },
-  { title: "How to Manage Diabetes", img:diabetes, icon: <FaAppleAlt className="text-green-500 text-xl" />, link: "#" },
-  { title: "Understanding Child Nutrition", img: "https://images.unsplash.com/photo-1613679074451-9ddcc1103cc8?q=80&w=870&auto=format&fit=crop", icon: <FaChild className="text-pink-500 text-xl" />, link: "#" },
-  { title: "Brain Health Secrets", img: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1031&auto=format&fit=crop", icon: <FaBrain className="text-purple-500 text-xl" />, link: "#" },
-  { title: "New Pain Relief Drug Released", img: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?q=80&w=940&auto=format&fit=crop", icon: <FaPills className="text-orange-500 text-xl" />, link: "#" },
-  { title: "General Health Checkup Guide", img: "https://images.unsplash.com/photo-1666887360680-9dc27a1d2753?q=80&w=870&auto=format&fit=crop", icon: <FaStethoscope className="text-gray-700 text-xl" />, link: "#" },
+  { title: "5 Tips to Improve Heart Health", img: heart, icon: <FaHeartbeat className="text-error text-xl" />, link: "#" },
+  { title: "New Vaccine Breakthrough", img: vaccine, icon: <FaSyringe className="text-info text-xl" />, link: "#" },
+  { title: "How to Manage Diabetes", img: diabetes, icon: <FaAppleAlt className="text-success text-xl" />, link: "#" },
+  { title: "Understanding Child Nutrition", img: "https://images.unsplash.com/photo-1613679074451-9ddcc1103cc8?q=80&w=870&auto=format&fit=crop", icon: <FaChild className="text-secondary text-xl" />, link: "#" },
+  { title: "Brain Health Secrets", img: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=1031&auto=format&fit=crop", icon: <FaBrain className="text-accent text-xl" />, link: "#" },
+  { title: "New Pain Relief Drug Released", img: "https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?q=80&w=940&auto=format&fit=crop", icon: <FaPills className="text-warning text-xl" />, link: "#" },
+  { title: "General Health Checkup Guide", img: "https://images.unsplash.com/photo-1666887360680-9dc27a1d2753?q=80&w=870&auto=format&fit=crop", icon: <FaStethoscope className="text-base-content text-xl" />, link: "#" },
 ];
 
 // Partners Data
@@ -61,13 +57,16 @@ const faqs = [
   { q: "Do you offer emergency services?", a: "Yes, 24/7 emergency care is available." },
 ];
 
-// Custom arrows for react-slick
+// Custom arrows
 function NextArrow(props) {
   const { className, style, onClick } = props;
   return (
-    <button aria-label="next" onClick={onClick}
-      className={`${className} !flex !items-center !justify-center !w-9 !h-9 !rounded-full !bg-white !shadow-md hover:!scale-105`}
-      style={{ ...style }}>
+    <button
+      aria-label="next"
+      onClick={onClick}
+      className={`${className} !flex !items-center !justify-center !w-9 !h-9 btn btn-circle btn-sm`}
+      style={{ ...style }}
+    >
       <AiOutlineRight />
     </button>
   );
@@ -76,9 +75,12 @@ function NextArrow(props) {
 function PrevArrow(props) {
   const { className, style, onClick } = props;
   return (
-    <button aria-label="previous" onClick={onClick}
-      className={`${className} !flex !items-center !justify-center !w-9 !h-9 !rounded-full !bg-white !shadow-md hover:!scale-105`}
-      style={{ ...style }}>
+    <button
+      aria-label="previous"
+      onClick={onClick}
+      className={`${className} !flex !items-center !justify-center !w-9 !h-9 btn btn-circle btn-sm`}
+      style={{ ...style }}
+    >
       <AiOutlineLeft />
     </button>
   );
@@ -88,7 +90,6 @@ export default function HomeSections() {
   const [form, setForm] = useState({ department: "", doctor: "", name: "", phone: "", email: "" });
   const [expanded, setExpanded] = useState(null);
 
-  // Split doctors: normal cards vs special tall-right image
   const { normalDoctors, tallImage } = useMemo(() => {
     const tall = doctors.find(d => !d.name && !d.specialty)?.img;
     const list = doctors.filter(d => d.name);
@@ -147,16 +148,13 @@ export default function HomeSections() {
   };
 
   return (
-    <div className="space-y-16 ml-30 mr-30 mt-50 mb-20">
+    <div className="space-y-16 container mx-auto mt-12 mb-20">
       <Toaster position="top-right" />
 
-      {/* Our Doctors */}
-      <section className="px-6 py-12 bg-gray-50">
+      {/* Doctors */}
+      <section className="px-6 py-12 bg-base-200">
         <h2 className="text-3xl font-bold text-center mb-8">Our Doctors</h2>
-
-        {/* Parent grid: 3 columns of doctor cards + 1 fixed right column for the tall image */}
         <div className="grid md:grid-cols-4 gap-6">
-          {/* Left: doctor cards in their own grid */}
           <div className="md:col-span-3 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {normalDoctors.map((doc, i) => (
               <motion.div
@@ -165,16 +163,16 @@ export default function HomeSections() {
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                className="bg-white p-6 rounded-xl shadow-lg text-center"
+                className="card bg-base-100 shadow-lg"
               >
-                <img src={doc.img} alt={doc.name} className="w-32 h-32 mx-auto rounded-full object-cover mb-4" />
-                <h3 className="text-lg font-semibold">{doc.name}</h3>
-                <p className="text-gray-500">{doc.specialty}</p>
+                <div className="card-body items-center text-center">
+                  <img src={doc.img} alt={doc.name} className="w-32 h-32 rounded-full object-cover mb-4" />
+                  <h3 className="text-lg font-semibold">{doc.name}</h3>
+                  <p className="text-base-content/70">{doc.specialty}</p>
+                </div>
               </motion.div>
             ))}
           </div>
-
-          {/* Right: vertical tall image (always right side on md+) */}
           {tallImage && (
             <motion.div
               initial={{ opacity: 0, y: 50 }}
@@ -183,31 +181,27 @@ export default function HomeSections() {
               className="md:col-span-1 hidden md:block"
             >
               <div className="h-full min-h-[520px]">
-                <img
-                  src={tallImage}
-                  alt="Doctors"
-                  className="w-full h-full object-cover rounded-xl shadow-lg"
-                />
+                <img src={tallImage} alt="Doctors" className="w-full h-full object-cover rounded-xl shadow-lg" />
               </div>
             </motion.div>
           )}
         </div>
       </section>
 
-      {/* Latest News */}
-      <section className="px-6 py-12 bg-white">
+      {/* News */}
+      <section className="px-6 py-12 bg-base-100">
         <h2 className="text-3xl font-bold mb-6">Be the First to Read</h2>
         <Slider {...newsSettings}>
           {news.map((n, i) => (
             <motion.div whileHover={{ scale: 1.03 }} key={i} className="p-4">
-              <div className="bg-gray-50 rounded-xl overflow-hidden shadow-md">
+              <div className="card bg-base-200 shadow-md">
                 <img src={n.img} alt={n.title} className="h-48 w-full object-cover" />
-                <div className="p-4 flex items-center gap-2">
+                <div className="card-body flex-row gap-2 items-center">
                   {n.icon}
                   <h3 className="font-bold">{n.title}</h3>
                 </div>
                 <div className="px-4 pb-4">
-                  <a href={n.link} className="text-blue-600 text-sm hover:underline">Read More →</a>
+                  <a href={n.link} className="link link-primary text-sm">Read More →</a>
                 </div>
               </div>
             </motion.div>
@@ -216,16 +210,13 @@ export default function HomeSections() {
       </section>
 
       {/* Appointment + FAQ */}
-      <section className="px-6 py-12 bg-gray-50 grid md:grid-cols-2 gap-8">
-        {/* Appointment Form */}
+      <section className="px-6 py-12 bg-base-200 grid md:grid-cols-2 gap-8">
+        {/* Form */}
         <div>
           <h2 className="text-3xl font-bold mb-4">Book an Appointment</h2>
-          <form
-            onSubmit={sendEmail}
-            className="space-y-4 backdrop-blur-lg bg-white/70 p-6 rounded-xl shadow-lg border border-gray-200"
-          >
+          <form onSubmit={sendEmail} className="card bg-base-100 shadow-lg p-6 space-y-4">
             <select
-              className="w-full border p-2 rounded"
+              className="select select-bordered w-full"
               value={form.department}
               onChange={e => setForm({ ...form, department: e.target.value })}
               required
@@ -237,7 +228,7 @@ export default function HomeSections() {
             </select>
 
             <select
-              className="w-full border p-2 rounded"
+              className="select select-bordered w-full"
               value={form.doctor}
               onChange={e => setForm({ ...form, doctor: e.target.value })}
               required
@@ -251,7 +242,7 @@ export default function HomeSections() {
             <input
               type="text"
               placeholder="Your Name"
-              className="w-full border p-2 rounded"
+              className="input input-bordered w-full"
               value={form.name}
               onChange={e => setForm({ ...form, name: e.target.value })}
               required
@@ -259,21 +250,19 @@ export default function HomeSections() {
             <input
               type="tel"
               placeholder="Phone"
-              className="w-full border p-2 rounded"
+              className="input input-bordered w-full"
               value={form.phone}
               onChange={e => setForm({ ...form, phone: e.target.value })}
             />
             <input
               type="email"
               placeholder="Email"
-              className="w-full border p-2 rounded"
+              className="input input-bordered w-full"
               value={form.email}
               onChange={e => setForm({ ...form, email: e.target.value })}
               required
             />
-            <button type="submit" className="bg-orange-500 text-white w-full py-2 rounded hover:bg-orange-700 cursor-pointer transition">
-              Make an Appointment
-            </button>
+            <button type="submit" className="btn btn-primary w-full">Make an Appointment</button>
           </form>
         </div>
 
@@ -286,10 +275,10 @@ export default function HomeSections() {
                 key={i}
                 layout
                 onClick={() => setExpanded(expanded === i ? null : i)}
-                className="bg-white p-4 rounded-xl shadow-lg cursor-pointer"
+                className="card bg-base-100 shadow-lg p-4 cursor-pointer"
               >
                 <h3 className="font-semibold">{faq.q}</h3>
-                {expanded === i && <p className="mt-2 text-gray-500">{faq.a}</p>}
+                {expanded === i && <p className="mt-2 text-base-content/70">{faq.a}</p>}
               </motion.div>
             ))}
           </div>
@@ -297,19 +286,28 @@ export default function HomeSections() {
       </section>
 
       {/* Partners */}
-      <section className="px-6 py-12 bg-white">
-        <h2 className="text-3xl font-bold text-center mb-8">Our Partners</h2>
-        <Slider {...partnerSettings}>
-          {partners.map((logo, i) => (
-            <motion.div key={i} whileHover={{ scale: 1.05 }} className="flex items-center justify-center p-4">
-              {/* Normalized box so all logos look consistent */}
-              <div className="h-16 w-40 flex items-center justify-center">
-                <img src={logo} alt="partner" className="max-h-full max-w-full object-contain" />
-              </div>
-            </motion.div>
-          ))}
-        </Slider>
-      </section>
+      <section className="px-6 py-12 bg-base-100">
+  <h2 className="text-3xl font-bold text-center mb-8">Our Partners</h2>
+  <Slider {...partnerSettings}>
+    {partners.map((logo, i) => (
+      <motion.div
+        key={i}
+        whileHover={{ scale: 1.05 }}
+        className="flex items-center justify-center p-4"
+      >
+        <div className="h-16 w-40 flex items-center justify-center bg-white dark:bg-gray-800 rounded-xl shadow-sm">
+          <img
+            src={logo}
+            alt="partner"
+            className="max-h-full max-w-full object-contain"
+          />
+        </div>
+      </motion.div>
+    ))}
+  </Slider>
+</section>
+
     </div>
   );
 }
+
