@@ -8,6 +8,7 @@ import ManageCamps from "../dashboard/organizer/manageCamps/ManageCamps"
 import OrganizerProfile from "../dashboard/organizer/OrganizerProfile"
 import ManageRegistered from "../dashboard/organizer/manageCamps/ManageRegistered"
 import AddCamp from "../dashboard/organizer/manageCamps/AddCamp"
+import ManageFeedbacks from "../dashboard/organizer/manageCamps/ManageFeedbacks"
 
 
 const OrganizerRoute = () => {
@@ -42,6 +43,8 @@ const OrganizerRoutes = () => {
   <Route path="add-camp" element={<AddCamp></AddCamp>} />
   <Route path="manage-camps" element={<ManageCamps />} />
   <Route path="manage-registered" element={<ManageRegistered />} />
+  <Route path="manage-feedbacks" element={<ManageFeedbacks />} />
+  <Route path="*" element={<Navigate to="organizer-profile" replace />} />
 </Route>
 
       </Route>

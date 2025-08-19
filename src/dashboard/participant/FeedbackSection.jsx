@@ -10,7 +10,7 @@ export default function FeedbackSection() {
   const { data: feedbacks = [], isLoading, isError } = useQuery({
     queryKey: ["feedbacks"],
     queryFn: async () => {
-      const res = await axiosSecure.get("/feedback")
+      const res = await axiosSecure.get("/feedback/approved-pending");
       return res.data
     },
   })

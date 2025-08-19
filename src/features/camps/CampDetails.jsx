@@ -1,6 +1,6 @@
 // src/pages/CampDetails.jsx
 import { useParams } from 'react-router'; 
-import { Calendar, DollarSign, Heart, MapPin, Shield, Star, Stethoscope, UserCheck, Users } from 'lucide-react';
+import { Calendar, DollarSign, Heart, MapPin, Shield, Star, Stethoscope, UserCheck, Users, Info , Bell} from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import axiosSecure from '../../api/axiosSecure';
 import { useState, useEffect, useContext } from 'react';
@@ -22,18 +22,20 @@ const Toast = ({ show, type, message, onClose }) => {
 
   if (!show) return null;
 
-  const getToastStyles = () => {
-    switch (type) {
-      case 'success':
-        return { bg: 'bg-green-50 dark:bg-green-900/300', icon: CheckCircle, iconColor: 'text-white' };
-      case 'error':
-        return { bg: 'bg-red-500', icon: XCircle, iconColor: 'text-white' };
-      default:
-        return { bg: 'bg-blue-50 dark:bg-blue-900/300', icon: CheckCircle, iconColor: 'text-white' };
-    }
-  };
+  function getToastStyles(type) {
+  switch (type) {
+    case "success":
+      return { bg: "bg-success text-success-content", icon: CheckCircle, iconColor: "text-success-content" };
+    case "error":
+      return { bg: "bg-error text-error-content", icon: XCircle, iconColor: "text-error-content" };
+    case "info":
+      return { bg: "bg-info text-info-content", icon: Info, iconColor: "text-info-content" };
+    default:
+      return { bg: "bg-base-200 text-base-content", icon: Bell, iconColor: "text-base-content" };
+  }
+}
 
-  const { bg, icon: Icon, iconColor } = getToastStyles();
+  const { bg, icon: Icon, iconColor } = getToastStyles(type);
 
   return (
     <div className="fixed top-4 right-4 z-[9999] animate-in slide-in-from-top-2 duration-300">
@@ -171,7 +173,7 @@ const registration = {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
+    <div className="min-h-screen bg-base-100 py-8 px-4">
       {/* Toast Component */}
       <Toast 
         show={toast.show} 
@@ -229,82 +231,87 @@ const registration = {
                   'Blood Pressure Monitoring',
                   'BMI Assessment'
                 ].map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3 p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-gray-700">{feature}</span>
+                  <div key={index} className="flex items-center gap-3 p-3 bg-base-200 dark:bg-base-300 rounded-lg">
+                    <CheckCircle className="w-5 h-5 text-success" />
+                    <span className="text-base-content">{feature}</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            {/* Camp Info Card */}
-            <div className="bg-base-100 dark:bg-base-800 rounded-2xl shadow-lg p-6 sticky top-6">
-              <h3 className="text-xl font-bold text-base-content mb-6">Camp Information</h3>
-              
-              <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-xl">
-                  <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/300 rounded-full flex items-center justify-center">
-                    <DollarSign className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-base-content/70">Registration Fee</p>
-                    <p className="text-xl font-bold text-blue-600">{camp.campFees} BDT</p>
-                  </div>
-                </div>
+         {/* Sidebar */}
+<div className="space-y-6">
+  {/* Camp Info Card */}
+  <div className="bg-base-100 rounded-2xl shadow-lg p-6 sticky top-6">
+    <h3 className="text-xl font-bold text-base-content mb-6">Camp Information</h3>
 
-                <div className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-900/30 rounded-xl">
-                  <div className="w-12 h-12 bg-green-50 dark:bg-green-900/300 rounded-full flex items-center justify-center">
-                    <Calendar className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-base-content/70">Date & Time</p>
-                    <p className="font-semibold text-base-content">{new Date(camp.dateTime).toLocaleString()}</p>
-                  </div>
-                </div>
+    <div className="space-y-4">
+      <div className="flex items-center gap-4 p-4 bg-base-200 rounded-xl">
+        <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
+          <DollarSign className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        </div>
+        <div>
+          <p className="text-sm text-base-content/70">Registration Fee</p>
+          <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{camp.campFees} BDT</p>
+        </div>
+      </div>
 
-                <div className="flex items-center gap-4 p-4 bg-purple-50 rounded-xl">
-                  <div className="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-base-content/70">Location</p>
-                    <p className="font-semibold text-base-content">{camp.location}</p>
-                  </div>
-                </div>
+      <div className="flex items-center gap-4 p-4 bg-base-200 rounded-xl">
+        <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center">
+          <Calendar className="w-6 h-6 text-green-600 dark:text-green-400" />
+        </div>
+        <div>
+          <p className="text-sm text-base-content/70">Date & Time</p>
+          <p className="font-semibold text-base-content">
+            {new Date(camp.dateTime).toLocaleString()}
+          </p>
+        </div>
+      </div>
 
-                <div className="flex items-center gap-4 p-4 bg-orange-50 rounded-xl">
-                  <div className="w-12 h-12 bg-orange-500 rounded-full flex items-center justify-center">
-                    <Stethoscope className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-base-content/70">Healthcare Professional</p>
-                    <p className="font-semibold text-base-content">{camp.healthcareProfessional}</p>
-                  </div>
-                </div>
+      <div className="flex items-center gap-4 p-4 bg-base-200 rounded-xl">
+        <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center">
+          <MapPin className="w-6 h-6 text-purple-600 dark:text-purple-400" />
+        </div>
+        <div>
+          <p className="text-sm text-base-content/70">Location</p>
+          <p className="font-semibold text-base-content">{camp.location}</p>
+        </div>
+      </div>
 
-                <div className="flex items-center gap-4 p-4 bg-pink-50 rounded-xl">
-                  <div className="w-12 h-12 bg-pink-500 rounded-full flex items-center justify-center">
-                    <Users className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-base-content/70">Participants</p>
-                    <p className="font-semibold text-base-content">{camp.participantCount} registered</p>
-                  </div>
-                </div>
-              </div>
+      <div className="flex items-center gap-4 p-4 bg-base-200 rounded-xl">
+        <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
+          <Stethoscope className="w-6 h-6 text-orange-600 dark:text-orange-400" />
+        </div>
+        <div>
+          <p className="text-sm text-base-content/70">Healthcare Professional</p>
+          <p className="font-semibold text-base-content">{camp.healthcareProfessional}</p>
+        </div>
+      </div>
 
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
-              >
-                <UserCheck className="w-5 h-5" />
-                Join This Camp
-              </button>
-            </div>
-          </div>
+      <div className="flex items-center gap-4 p-4 bg-base-200 rounded-xl">
+        <div className="w-12 h-12 bg-pink-500/20 rounded-full flex items-center justify-center">
+          <Users className="w-6 h-6 text-pink-600 dark:text-pink-400" />
+        </div>
+        <div>
+          <p className="text-sm text-base-content/70">Participants</p>
+          <p className="font-semibold text-base-content">
+            {camp.participantCount} registered
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <button
+      onClick={() => setIsModalOpen(true)}
+      className="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2"
+    >
+      <UserCheck className="w-5 h-5" />
+      Join This Camp
+    </button>
+  </div>
+</div>
+
         </div>
       </div>
 
@@ -425,19 +432,23 @@ const registration = {
 
                   <div className="grid md:grid-cols-2 gap-4 mt-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Gender *</label>
-                      <select
-                        name="gender"
-                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-50 transition-all"
-                        value={formData.gender}
-                        onChange={handleChange}
-                        required
-                      >
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                      </select>
+                     <label className="block text-sm font-medium text-base-content mb-2">
+  Gender *
+</label>
+<select
+  name="gender"
+  className="w-full px-4 py-3 border-2 border-base-300 bg-base-100 text-base-content rounded-xl 
+             focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-800 
+             transition-all"
+  value={formData.gender}
+  onChange={handleChange}
+  required
+>
+  <option value="">Select Gender</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+  <option value="Other">Other</option>
+</select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">Emergency Contact *</label>

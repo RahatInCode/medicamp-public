@@ -23,6 +23,7 @@ export default function OrganizerDashboardLayout() {
           label="Registered Camps"
           icon={<ClipboardList size={18} />}
         />
+       <SidebarLink to="manage-feedbacks" label="Manage Feedbacks" icon={<ClipboardList size={18} />} />
       </nav>
 
       {/* Main Content */}
