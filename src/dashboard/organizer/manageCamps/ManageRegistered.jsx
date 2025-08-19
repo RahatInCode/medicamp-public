@@ -4,7 +4,7 @@ import axiosSecure from "../../../api/axiosSecure";
 import { AuthContext } from "../../../features/auth/AuthContext";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
-import { Check, X, Loader2 } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 
 export default function ManageRegistered() {
   const { user, loading: authLoading } = useContext(AuthContext);
@@ -77,17 +77,19 @@ export default function ManageRegistered() {
 
   return (
     <div className="p-4 md:p-6">
-      <h2 className="text-2xl md:text-3xl font-bold mb-6">📋 Manage Registered Participants</h2>
-      <div className="overflow-x-auto">
-        <table className="min-w-full bg-white border rounded shadow-md text-sm">
-          <thead className="bg-slate-100 text-slate-700">
+      <h2 className="text-2xl md:text-3xl font-bold mb-6 text-base-content">
+        📋 Manage Registered Participants
+      </h2>
+      <div className="overflow-x-auto bg-base-100 border border-base-300 shadow rounded-lg">
+        <table className="table table-zebra w-full text-base-content">
+          <thead className="bg-base-200 text-base-content">
             <tr>
-              <th className="p-3 text-left">Camp</th>
-              <th className="p-3 text-left">Participant</th>
-              <th className="p-3 text-left">Email</th>
-              <th className="p-3 text-center">Payment</th>
-              <th className="p-3 text-center">Confirm</th>
-              <th className="p-3 text-center">Cancel</th>
+              <th>Camp</th>
+              <th>Participant</th>
+              <th>Email</th>
+              <th className="text-center">Payment</th>
+              <th className="text-center">Confirm</th>
+              <th className="text-center">Cancel</th>
             </tr>
           </thead>
           <tbody>
@@ -97,43 +99,39 @@ export default function ManageRegistered() {
               const disableCancel = isPaid && isConfirmed;
 
               return (
-                <tr key={reg._id} className="border-t hover:bg-slate-50">
-                  <td className="p-3 font-medium text-gray-900">{reg.campName}</td>
-                  <td className="p-3 text-gray-900">{reg.participantName}</td>
-                  <td className="p-3 text-gray-900">{reg.participantEmail}</td>
-                  <td className="p-3 text-center">
-                    <span
-                      className={`px-2 py-1 rounded-full font-semibold text-xs ${
-                        isPaid ? "bg-green-500 text-white" : "bg-yellow-400 text-black"
-                      }`}
-                    >
+                <tr key={reg._id} className="hover:bg-base-200">
+                  <td className="font-medium">{reg.campName}</td>
+                  <td>{reg.participantName}</td>
+                  <td>{reg.participantEmail}</td>
+                  <td className="text-center">
+                    <span className={`badge ${isPaid ? "badge-success" : "badge-warning"}`}>
                       {reg.paymentStatus}
                     </span>
                   </td>
-                  <td className="p-3 text-center">
+                  <td className="text-center">
                     {reg.confirmationStatus === "Pending" ? (
                       <button
                         onClick={() => confirmMutation.mutate(reg._id)}
                         disabled={confirmMutation.isLoading}
-                        className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className={`btn btn-sm btn-primary ${
+                          confirmMutation.isLoading ? "loading" : ""
+                        }`}
                       >
                         {confirmMutation.isLoading ? (
-                          <Loader2 className="animate-spin w-4 h-4 mx-auto" />
+                          <Loader2 className="animate-spin w-4 h-4" />
                         ) : (
                           "Confirm"
                         )}
                       </button>
                     ) : (
-                      <span className="px-2 py-1 bg-green-600 text-white rounded-full text-xs font-semibold">
-                        Confirmed
-                      </span>
+                      <span className="badge badge-success">Confirmed</span>
                     )}
                   </td>
-                  <td className="p-3 text-center">
+                  <td className="text-center">
                     <button
                       onClick={() => handleCancel(reg._id, disableCancel)}
                       disabled={disableCancel}
-                      className="px-3 py-1 bg-red-600 text-white text-sm rounded hover:bg-red-700 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-1"
+                      className="btn btn-sm btn-error disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                     >
                       <X className="w-4 h-4" />
                       Cancel
@@ -147,21 +145,29 @@ export default function ManageRegistered() {
       </div>
 
       {/* Pagination Controls */}
-      <div className="mt-6 flex justify-center items-center gap-4 text-sm">
+      <div className="join flex justify-center mt-6">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+          className="join-item btn btn-sm"
         >
           Previous
         </button>
-        <span className="text-gray-600">
-          Page {currentPage} of {totalPages}
-        </span>
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`join-item btn btn-sm ${
+              currentPage === i + 1 ? "btn-primary" : "btn-ghost"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
         <button
           onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+          className="join-item btn btn-sm"
         >
           Next
         </button>
@@ -169,6 +175,7 @@ export default function ManageRegistered() {
     </div>
   );
 }
+
 
 
 

@@ -25,7 +25,6 @@ export default function ManageCamps() {
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
 
-  // For update form controlled inputs:
   const [formData, setFormData] = useState({
     campName: "",
     campFees: "",
@@ -62,7 +61,6 @@ export default function ManageCamps() {
 
   const totalPages = Math.ceil(total / limit);
 
-  // Delete modal
   const confirmDelete = (camp) => {
     setSelectedCamp(camp);
     setShowDeleteModal(true);
@@ -84,7 +82,6 @@ export default function ManageCamps() {
     }
   };
 
-  // Update modal: open and prefill form
   const openUpdateModal = (camp) => {
     setSelectedCamp(camp);
     setFormData({
@@ -99,23 +96,36 @@ export default function ManageCamps() {
     setShowUpdateModal(true);
   };
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Submit update form
   const handleUpdateSubmit = async (e) => {
     e.preventDefault();
     if (!selectedCamp) return;
 
     setUpdateLoading(true);
     try {
-      const { campName, campFees, dateTime, location, healthcareProfessional, description, image } = formData;
+      const {
+        campName,
+        campFees,
+        dateTime,
+        location,
+        healthcareProfessional,
+        description,
+        image,
+      } = formData;
 
-      // Validation simple example (you can add more)
-      if (!campName || !campFees || !dateTime || !location || !healthcareProfessional || !description || !image) {
+      if (
+        !campName ||
+        !campFees ||
+        !dateTime ||
+        !location ||
+        !healthcareProfessional ||
+        !description ||
+        !image
+      ) {
         toast.error("All fields are required");
         setUpdateLoading(false);
         return;
@@ -131,13 +141,17 @@ export default function ManageCamps() {
         image,
       };
 
-      const res = await axiosSecure.put(`/camps/update-camp/${selectedCamp._id}`, updatedData);
+      const res = await axiosSecure.put(
+        `/camps/update-camp/${selectedCamp._id}`,
+        updatedData
+      );
 
       toast.success("Camp updated successfully!");
 
-      // Update local state with new camp data without refetch
       setCamps((prev) =>
-        prev.map((camp) => (camp._id === selectedCamp._id ? res.data.updated : camp))
+        prev.map((camp) =>
+          camp._id === selectedCamp._id ? res.data.updated : camp
+        )
       );
 
       setShowUpdateModal(false);
@@ -151,30 +165,28 @@ export default function ManageCamps() {
   };
 
   if (authLoading)
-    return <p className="p-6 text-gray-800">Loading user info...</p>;
+    return <p className="p-6">Loading user info...</p>;
   if (!user?.email)
-    return <p className="p-6 text-gray-800">Please login to manage camps.</p>;
+    return <p className="p-6">Please login to manage camps.</p>;
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-white min-h-screen text-gray-900">
+    <div className="p-6 max-w-7xl mx-auto min-h-screen">
       <Toaster />
-      <h2 className="text-3xl font-bold mb-6 text-center text-black">
-        🎯 Manage Your Camps
-      </h2>
+      <h2 className="text-3xl font-bold mb-6 text-center text-base-content">🎯 Manage Your Camps</h2>
 
       {/* Search & Sort */}
       <div className="flex flex-wrap justify-between gap-4 mb-6">
         <input
-          className="border border-gray-300 focus:ring-2 focus:ring-blue-400 p-2 rounded-md w-full sm:w-64 text-gray-800"
           type="text"
           placeholder="Search by name..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          className="input input-bordered bg-base-100 text-base-content border-base-300 w-full sm:w-64"
         />
         <select
-          className="border border-gray-300 p-2 rounded-md w-full sm:w-48 text-gray-800"
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
+          className="select select-bordered bg-base-100 text-base-content border-base-300 w-full sm:w-48"
         >
           <option value="createdAt">Sort by Latest</option>
           <option value="campName">Sort by Name</option>
@@ -183,46 +195,40 @@ export default function ManageCamps() {
       </div>
 
       {/* Camps Table */}
-      <div className="overflow-x-auto shadow rounded-md bg-gray-50 border border-gray-200">
+      <div className="overflow-x-auto bg-base-100 text-base-content shadow rounded-lg border border-base-300">
         {loading ? (
-          <p className="p-6 text-center text-gray-700">Loading camps...</p>
+          <p className="p-6 text-center">Loading camps...</p>
         ) : camps.length === 0 ? (
-          <p className="p-6 text-center text-gray-700">No camps found.</p>
+          <p className="p-6 text-center">No camps found.</p>
         ) : (
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-100 text-gray-900">
+          <table className="table table-zebra w-full">
+            <thead className="bg-base-200 text-base-content">
               <tr>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Name</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">
-                  Date & Time
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">Location</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold">
-                  Healthcare Pro
-                </th>
-                <th className="px-4 py-3 text-sm font-semibold text-center">
-                  Actions
-                </th>
+                <th>Name</th>
+                <th>Date & Time</th>
+                <th>Location</th>
+                <th>Healthcare Pro</th>
+                <th className="text-center">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 text-gray-800">
+            <tbody>
               {camps.map((camp) => (
-                <tr key={camp._id} className="hover:bg-gray-100">
-                  <td className="px-4 py-3">{camp.campName}</td>
-                  <td className="px-4 py-3">{camp.dateTime}</td>
-                  <td className="px-4 py-3">{camp.location}</td>
-                  <td className="px-4 py-3">{camp.healthcareProfessional}</td>
-                  <td className="px-4 py-3 text-center">
-                    <div className="flex justify-center gap-3">
+                <tr key={camp._id}>
+                  <td>{camp.campName}</td>
+                  <td>{camp.dateTime}</td>
+                  <td>{camp.location}</td>
+                  <td>{camp.healthcareProfessional}</td>
+                  <td className="text-center">
+                    <div className="flex justify-center gap-2">
                       <button
                         onClick={() => openUpdateModal(camp)}
-                        className="flex items-center gap-1 px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded transition text-sm"
+                        className="btn btn-sm btn-primary"
                       >
                         <Pencil size={16} /> Edit
                       </button>
                       <button
                         onClick={() => confirmDelete(camp)}
-                        className="flex items-center gap-1 px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded transition text-sm"
+                        className="btn btn-sm btn-error"
                       >
                         <Trash2 size={16} /> Delete
                       </button>
@@ -237,16 +243,14 @@ export default function ManageCamps() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex justify-center mt-6 gap-2 flex-wrap">
+        <div className="join flex justify-center mt-6 flex-wrap">
           {Array.from({ length: totalPages }, (_, i) => (
             <button
               key={i}
               onClick={() => setPage(i + 1)}
-              className={`px-4 py-1 rounded-md border ${
-                page === i + 1
-                  ? "bg-blue-600 text-white"
-                  : "hover:bg-gray-200 text-gray-800"
-              } transition`}
+              className={`join-item btn btn-sm ${
+                page === i + 1 ? "btn-primary" : "btn-ghost"
+              }`}
             >
               {i + 1}
             </button>
@@ -257,8 +261,8 @@ export default function ManageCamps() {
       {/* Delete Modal */}
       <Dialog open={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <Dialog.Panel className="bg-white p-6 rounded-lg max-w-sm w-full shadow-xl text-gray-900">
-            <Dialog.Title className="text-lg font-semibold text-red-600">
+          <Dialog.Panel className="bg-base-100 text-base-content p-6 rounded-lg max-w-sm w-full shadow-xl border border-base-300">
+            <Dialog.Title className="text-lg font-semibold text-error">
               ⚠️ Confirm Delete
             </Dialog.Title>
             <p className="text-sm mt-2 mb-6">
@@ -268,18 +272,14 @@ export default function ManageCamps() {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="px-4 py-2 rounded-md border text-gray-800 hover:bg-gray-100"
+                className="btn bg-base-200 text-base-content border-base-300"
               >
                 Cancel
               </button>
               <button
                 onClick={handleDelete}
                 disabled={deleteLoading}
-                className={`px-4 py-2 rounded-md text-white ${
-                  deleteLoading
-                    ? "bg-red-400 cursor-not-allowed"
-                    : "bg-red-600 hover:bg-red-700"
-                } transition`}
+                className={`btn btn-error ${deleteLoading ? "loading" : ""}`}
               >
                 {deleteLoading ? "Deleting..." : "Yes, Delete"}
               </button>
@@ -291,74 +291,30 @@ export default function ManageCamps() {
       {/* Update Modal */}
       <Dialog open={showUpdateModal} onClose={() => setShowUpdateModal(false)}>
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-          <Dialog.Panel className="bg-white p-6 rounded-lg max-w-lg w-full shadow-xl text-gray-900">
+          <Dialog.Panel className="bg-base-100 text-base-content p-6 rounded-lg max-w-lg w-full shadow-xl border border-base-300">
             <Dialog.Title className="text-xl font-semibold mb-4">
               ✏️ Update Camp
             </Dialog.Title>
             <form onSubmit={handleUpdateSubmit} className="space-y-4">
-              <input
-                name="campName"
-                value={formData.campName}
-                onChange={handleInputChange}
-                placeholder="Camp Name"
-                className="w-full p-2 border rounded-md"
-                required
-              />
-              <input
-                name="campFees"
-                value={formData.campFees}
-                onChange={handleInputChange}
-                type="number"
-                placeholder="Camp Fees"
-                className="w-full p-2 border rounded-md"
-                required
-              />
-              <input
-                name="dateTime"
-                value={formData.dateTime}
-                onChange={handleInputChange}
-                type="datetime-local"
-                placeholder="Date & Time"
-                className="w-full p-2 border rounded-md"
-                required
-              />
-              <input
-                name="location"
-                value={formData.location}
-                onChange={handleInputChange}
-                placeholder="Location"
-                className="w-full p-2 border rounded-md"
-                required
-              />
-              <input
-                name="healthcareProfessional"
-                value={formData.healthcareProfessional}
-                onChange={handleInputChange}
-                placeholder="Healthcare Professional"
-                className="w-full p-2 border rounded-md"
-                required
-              />
-              <input
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder="Description"
-                className="w-full p-2 border rounded-md"
-                required
-              />
-              <input
-                name="image"
-                value={formData.image}
-                onChange={handleInputChange}
-                placeholder="Image URL"
-                className="w-full p-2 border rounded-md"
-                required
-              />
+              {Object.entries(formData).map(([key, value]) => (
+                <input
+                  key={key}
+                  name={key}
+                  value={value}
+                  onChange={handleInputChange}
+                  placeholder={key
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/^./, (str) => str.toUpperCase())}
+                  className="input input-bordered bg-base-100 text-base-content border-base-300 w-full"
+                  required
+                  type={key === "campFees" ? "number" : key === "dateTime" ? "datetime-local" : "text"}
+                />
+              ))}
               <div className="flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowUpdateModal(false)}
-                  className="px-4 py-2 border rounded-md hover:bg-gray-100"
+                  className="btn bg-base-200 text-base-content border-base-300"
                   disabled={updateLoading}
                 >
                   Cancel
@@ -366,7 +322,7 @@ export default function ManageCamps() {
                 <button
                   type="submit"
                   disabled={updateLoading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                  className={`btn btn-primary ${updateLoading ? "loading" : ""}`}
                 >
                   {updateLoading ? "Updating..." : "Update Camp"}
                 </button>
@@ -378,6 +334,8 @@ export default function ManageCamps() {
     </div>
   );
 }
+
+
 
 
 

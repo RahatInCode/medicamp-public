@@ -7,7 +7,6 @@ import { updateProfile } from "firebase/auth";
 import toast from "react-hot-toast";
 import { auth } from "../../firebase/firebase.config";
 
-
 const OrganizerProfile = () => {
   const { user } = useContext(AuthContext); // Firebase user
   const [isEditing, setIsEditing] = useState(false);
@@ -47,33 +46,33 @@ const OrganizerProfile = () => {
     }
   };
 
-  if (!user) return <p className="text-white">User not logged in.</p>;
+  if (!user) return <p className="p-6 text-base-content">User not logged in.</p>;
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="max-w-md mx-auto mt-10 bg-white/10 backdrop-blur-md border border-white/10 shadow-xl p-6 rounded-2xl text-white"
+      className="max-w-md mx-auto mt-10 bg-base-100 text-base-content border border-base-300 shadow-xl p-6 rounded-2xl"
     >
       {!isEditing ? (
         <div className="text-center space-y-4">
           <img
             src={profileImage || "https://i.pravatar.cc/150?img=12"}
             alt="Profile"
-            className="w-24 h-24 mx-auto rounded-full border-2 border-white object-cover"
+            className="w-24 h-24 mx-auto rounded-full border-2 border-base-300 object-cover"
           />
           <h2 className="text-xl font-semibold flex justify-center items-center gap-2">
             <UserCircle className="w-5 h-5" />
             {user.displayName || "No Name"}
           </h2>
-          <p className="flex justify-center items-center gap-2 text-sm text-gray-200">
+          <p className="flex justify-center items-center gap-2 text-sm text-base-content/70">
             <Mail className="w-4 h-4" />
             {user.email}
           </p>
           <button
             onClick={() => setIsEditing(true)}
-            className="mt-4 px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-500 hover:scale-105 transition rounded-xl flex items-center justify-center gap-2 font-medium"
+            className="btn btn-primary mt-4 flex items-center justify-center gap-2 w-full sm:w-auto"
           >
             <Edit2 className="w-4 h-4" /> Update Profile
           </button>
@@ -84,24 +83,24 @@ const OrganizerProfile = () => {
           className="space-y-4 animate-in fade-in duration-300"
         >
           <div>
-            <label className="block mb-1 text-sm">Name</label>
-            <div className="flex items-center border border-white/20 rounded-xl px-3 py-2 bg-white/10">
-              <UserCircle className="w-5 h-5 text-white/70" />
+            <label className="block mb-1 text-sm text-base-content/70">Name</label>
+            <div className="flex items-center border border-base-300 rounded-xl px-3 py-2 bg-base-100">
+              <UserCircle className="w-5 h-5 text-base-content/50" />
               <input
                 {...register("name")}
-                className="bg-transparent outline-none ml-2 w-full text-white"
+                className="bg-transparent outline-none ml-2 w-full text-base-content"
                 type="text"
               />
             </div>
           </div>
 
           <div>
-            <label className="block mb-1 text-sm">Email</label>
-            <div className="flex items-center border border-white/20 rounded-xl px-3 py-2 bg-white/10">
-              <Mail className="w-5 h-5 text-white/70" />
+            <label className="block mb-1 text-sm text-base-content/70">Email</label>
+            <div className="flex items-center border border-base-300 rounded-xl px-3 py-2 bg-base-100">
+              <Mail className="w-5 h-5 text-base-content/50" />
               <input
                 {...register("email")}
-                className="bg-transparent outline-none ml-2 w-full text-white"
+                className="bg-transparent outline-none ml-2 w-full text-base-content"
                 type="email"
                 disabled
               />
@@ -109,12 +108,12 @@ const OrganizerProfile = () => {
           </div>
 
           <div>
-            <label className="block mb-1 text-sm">Profile Image URL</label>
-            <div className="flex items-center border border-white/20 rounded-xl px-3 py-2 bg-white/10">
-              <Image className="w-5 h-5 text-white/70" />
+            <label className="block mb-1 text-sm text-base-content/70">Profile Image URL</label>
+            <div className="flex items-center border border-base-300 rounded-xl px-3 py-2 bg-base-100">
+              <Image className="w-5 h-5 text-base-content/50" />
               <input
                 {...register("image")}
-                className="bg-transparent outline-none ml-2 w-full text-white"
+                className="bg-transparent outline-none ml-2 w-full text-base-content"
                 type="text"
               />
             </div>
@@ -122,15 +121,15 @@ const OrganizerProfile = () => {
               <img
                 src={profileImage}
                 alt="Preview"
-                className="w-20 h-20 mt-3 rounded-full object-cover border"
+                className="w-20 h-20 mt-3 rounded-full object-cover border border-base-300"
               />
             )}
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
             <button
               type="submit"
-              className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-xl w-full"
+              className="btn btn-success w-full sm:w-auto flex-1"
             >
               Save
             </button>
@@ -145,7 +144,7 @@ const OrganizerProfile = () => {
                 });
                 setProfileImage(user.photoURL || "");
               }}
-              className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-xl w-full"
+              className="btn btn-error w-full sm:w-auto flex-1"
             >
               Cancel
             </button>
@@ -154,9 +153,8 @@ const OrganizerProfile = () => {
       )}
     </motion.div>
   );
-  
 };
 
-
 export default OrganizerProfile;
+
 

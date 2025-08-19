@@ -22,9 +22,7 @@ const FeedbackModal = ({ campId, onClose }) => {
         "/feedback",
         { campId, rating, feedback: feedbackText },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
       toast.success("Thank you for your feedback!");
@@ -40,12 +38,17 @@ const FeedbackModal = ({ campId, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white rounded-lg p-6 w-96 max-w-full relative">
-        <h2 className="text-xl font-semibold mb-4">Give Your Feedback</h2>
-        <label className="block mb-2 font-medium">Rating</label>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-gray-900 rounded-xl p-6 w-96 max-w-full shadow-lg border border-gray-200 dark:border-gray-700">
+        <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+          Give Your Feedback
+        </h2>
+
+        <label className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+          Rating
+        </label>
         <select
-          className="w-full mb-4 p-2 border rounded"
+          className="w-full mb-4 p-2 border rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           value={rating}
           onChange={(e) => setRating(Number(e.target.value))}
         >
@@ -56,9 +59,11 @@ const FeedbackModal = ({ campId, onClose }) => {
           ))}
         </select>
 
-        <label className="block mb-2 font-medium">Feedback</label>
+        <label className="block mb-2 font-medium text-gray-700 dark:text-gray-300">
+          Feedback
+        </label>
         <textarea
-          className="w-full p-2 mb-4 border rounded"
+          className="w-full p-2 mb-4 border rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
           rows={4}
           value={feedbackText}
           onChange={(e) => setFeedbackText(e.target.value)}
@@ -67,7 +72,7 @@ const FeedbackModal = ({ campId, onClose }) => {
 
         <div className="flex justify-end gap-3">
           <button
-            className="btn btn-secondary"
+            className="btn btn-outline"
             onClick={onClose}
             disabled={submitting}
           >
@@ -87,4 +92,5 @@ const FeedbackModal = ({ campId, onClose }) => {
 };
 
 export default FeedbackModal;
+
 

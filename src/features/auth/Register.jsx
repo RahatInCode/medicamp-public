@@ -23,15 +23,10 @@ const Register = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then(async (userCredential) => {
         const user = userCredential.user;
-        console.log("✅ User registered:", user);
-
         await updateProfile(user, { displayName: name });
-
         const token = await user.getIdToken();
-        console.log("🔐 JWT Token:", token);
         localStorage.setItem("token", token);
 
-        // ✅ Immediately update MongoDB
         await fetch("https://medicamp-server-five.vercel.app/users", {
           method: "PUT",
           headers: {
@@ -42,7 +37,7 @@ const Register = () => {
         });
 
         toast.success("🎉 Registration successful!");
-        navigate("/");
+        setTimeout(() => navigate("/"), 1200);
       })
       .catch((err) => {
         console.error("❌ Registration error:", err.message);
@@ -54,16 +49,11 @@ const Register = () => {
     signInWithPopup(auth, googleProvider)
       .then(async (res) => {
         const user = res.user;
-        console.log("✅ Google register:", user);
-
         const token = await user.getIdToken();
         const name = user.displayName || "Google User";
         const email = user.email;
-
         localStorage.setItem("token", token);
-        console.log("🔐 Google JWT Token:", token);
 
-        // ✅ Update MongoDB immediately
         await fetch("https://medicamp-server-five.vercel.app/users", {
           method: "PUT",
           headers: {
@@ -83,40 +73,48 @@ const Register = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow">
-      <h2 className="text-2xl mb-4 font-bold text-center">Register</h2>
+    <div className="max-w-md mx-auto mt-20 p-6 bg-base-200 dark:bg-base-300 rounded-xl shadow-lg">
+      <h2 className="text-2xl mb-6 font-bold text-center text-base-content dark:text-white">
+        Register
+      </h2>
+
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <input
           {...register("name", { required: true })}
           type="text"
           placeholder="Full Name"
-          className="input input-bordered w-full"
+          className="input input-bordered w-full bg-base-100 dark:bg-base-200 text-base-content dark:text-white"
         />
         <input
           {...register("email", { required: true })}
           type="email"
           placeholder="Email"
-          className="input input-bordered w-full"
+          className="input input-bordered w-full bg-base-100 dark:bg-base-200 text-base-content dark:text-white"
         />
         <input
           {...register("password", { required: true })}
           type="password"
           placeholder="Password (min 6 characters)"
-          className="input input-bordered w-full"
+          className="input input-bordered w-full bg-base-100 dark:bg-base-200 text-base-content dark:text-white"
         />
-        <button type="submit" className="btn bg-black text-white w-full">
+        <button
+          type="submit"
+          className="btn btn-primary w-full"
+        >
           Register
         </button>
       </form>
+
       <button
         onClick={handleGoogleRegister}
         className="btn btn-outline w-full mt-4"
       >
         Register with Google
       </button>
-      <p className="mt-4 text-center">
+
+      <p className="mt-4 text-center text-base-content dark:text-gray-300">
         Already have an account?{" "}
-        <Link to="/join-us" className="text-blue-600 underline">
+        <Link to="/join-us" className="text-primary underline">
           Login
         </Link>
       </p>
@@ -125,6 +123,7 @@ const Register = () => {
 };
 
 export default Register;
+
 
 
 
