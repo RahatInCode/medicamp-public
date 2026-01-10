@@ -113,7 +113,7 @@ const RegisteredCamps = () => {
             {registeredCamps.length === 0 ? (
               <tr>
                 <td colSpan="6" className="text-center text-gray-500 py-5">
-                  You haven’t registered for any camps yet.
+                  You haven&amp;t registered for any camps yet.
                 </td>
               </tr>
             ) : (
