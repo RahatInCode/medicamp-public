@@ -140,3 +140,5 @@ export default function ChatbotWidget() {
     </div>
   );
 }
+
+// will add more features later like saving chat history, session management, etc with more Ai features
